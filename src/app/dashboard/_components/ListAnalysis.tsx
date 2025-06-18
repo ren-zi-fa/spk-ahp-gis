@@ -1,6 +1,8 @@
 "use client";
 import { Card, CardTitle } from "@/components/ui/card";
 import { fetcher } from "@/lib/fetcher";
+import { useRouter } from "next/navigation";
+
 import useSWR from "swr";
 
 type Analysis = {
@@ -9,6 +11,7 @@ type Analysis = {
 };
 
 export default function ListAnalysis() {
+  const router = useRouter();
   const { data, error, isLoading } = useSWR<Analysis[]>(
     "/api/analysis",
     fetcher
@@ -21,7 +24,11 @@ export default function ListAnalysis() {
       {data && data.length > 0 ? (
         <div className="grid grid-cols-5 space-x-4 gap-2">
           {data.map((item, index) => (
-            <Card key={index}>
+            <Card
+              key={index}
+              className="cursor-pointer hover:bg-white/10"
+              onClick={() => router.push(`/dashboard/create/${item.id}`)}
+            >
               <CardTitle className="text-center">{item.name}</CardTitle>
             </Card>
           ))}

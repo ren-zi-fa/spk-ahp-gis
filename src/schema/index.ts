@@ -4,5 +4,10 @@ export const AnalysisSchema = z.object({
   id: z.string(),
 });
 export const KriteriaSchema = z.object({
-  kriteriaName: z.string().min(3),
+  analysisId: z.string().uuid(),
+  criteria: z.array(
+    z.object({
+      name: z.string().min(1),
+    })
+  ),
 });

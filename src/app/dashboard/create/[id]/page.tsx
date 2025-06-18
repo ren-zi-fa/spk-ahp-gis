@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 
 import { ContentLayout } from "@/components/admin-panel/content-layout";
@@ -9,11 +10,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import InputAlternativesKriteria from "./_components/InputAlternativesKriteria";
+import { useParams } from "next/navigation";
+import AlternatifKritera from "../../_components/ManagementDataSPK/AlternatifKritera";
 
-export default function UsersPage() {
+export default function page() {
+  const params = useParams<{ id: string }>();
+
+  console.log(params.id);
+
   return (
-    <ContentLayout title="Analysis">
+    <ContentLayout title="Input Data">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -33,7 +39,7 @@ export default function UsersPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <InputAlternativesKriteria />
+      <AlternatifKritera id={params.id} />
     </ContentLayout>
   );
 }

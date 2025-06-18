@@ -1,102 +1,125 @@
+import Link from "next/link";
 import Image from "next/image";
+import { PanelsTopLeft } from "lucide-react";
+import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
-export default function Home() {
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-col min-h-screen">
+      <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm dark:bg-black/[0.6] border-border/40">
+        <div className="container h-14 flex items-center">
+          <Link
+            href="/"
+            className="flex justify-start items-center hover:opacity-85 transition-opacity duration-300"
           >
+            <PanelsTopLeft className="w-6 h-6 mr-3" />
+            <span className="font-bold">shadcn/ui sidebar</span>
+            <span className="sr-only">shadcn/ui sidebar</span>
+          </Link>
+          <nav className="ml-auto flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full w-8 h-8 bg-background"
+              asChild
+            >
+              <Link href="https://github.com/salimi-my/shadcn-ui-sidebar">
+                <GitHubLogoIcon className="h-[1.2rem] w-[1.2rem]" />
+              </Link>
+            </Button>
+            <ModeToggle />
+          </nav>
+        </div>
+      </header>
+      <main className="min-h-[calc(100vh-57px-97px)] flex-1">
+        <div className="container relative pb-10">
+          <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-6">
+            <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
+              Sidebar example built on top of shadcn/ui
+            </h1>
+            <span className="max-w-[750px] text-center text-lg font-light text-foreground">
+              A stunning and functional retractable sidebar for Next.js using
+              shadcn/ui complete with desktop and mobile responsiveness.
+            </span>
+            <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-6">
+              <Button variant="default" asChild>
+                <Link href="/dashboard">
+                  Demo
+                  <ArrowRightIcon className="ml-2" />
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link
+                  href="https://ui.shadcn.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn shadcn/ui
+                </Link>
+              </Button>
+            </div>
+          </section>
+          <div className="w-full flex justify-center relative">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/demo-light-min.png"
+              width={1080}
+              height={608}
+              alt="demo"
+              priority
+              className="border rounded-xl shadow-sm dark:hidden"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <Image
+              src="/demo-dark-min.png"
+              width={1080}
+              height={608}
+              alt="demo-dark"
+              priority
+              className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
+            />
+            <Image
+              src="/demo-mobile-light-min.png"
+              width={228}
+              height={494}
+              alt="demo-mobile"
+              className="border rounded-xl absolute bottom-0 right-0 hidden lg:block dark:hidden"
+            />
+            <Image
+              src="/demo-mobile-dark-min.png"
+              width={228}
+              height={494}
+              alt="demo-mobile"
+              className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
+            />
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="py-6 md:py-0 border-t border-border/40">
+        <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
+          <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
+            Built on top of{" "}
+            <Link
+              href="https://ui.shadcn.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              shadcn/ui
+            </Link>
+            . The source code is available on{" "}
+            <Link
+              href="https://github.com/salimi-my/shadcn-ui-sidebar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              GitHub
+            </Link>
+            .
+          </p>
+        </div>
       </footer>
     </div>
   );

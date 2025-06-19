@@ -10,14 +10,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AlternatifKritera from "../../_components/ManagementDataSPK/AlternatifKritera";
 
 export default function page() {
   const params = useParams<{ id: string }>();
 
   console.log(params.id);
-
+  const router = useRouter();
   return (
     <ContentLayout title="Input Data">
       <Breadcrumb>
@@ -30,12 +30,23 @@ export default function page() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard">Analysis</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Input Data </BreadcrumbPage>
+            <BreadcrumbPage>Input Data</BreadcrumbPage>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              <button
+                className=""
+                onClick={() => router.push(`/dashboard/calculate/${params.id}`)}
+              >
+                Process Data
+              </button>
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

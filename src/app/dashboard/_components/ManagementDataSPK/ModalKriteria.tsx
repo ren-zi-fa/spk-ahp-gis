@@ -6,23 +6,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import TableAlternatif from "./TableAlternatif";
-export default function ModalAlternatif({
-  analysisId,
-}: {
-  analysisId: string;
-}) {
+import TableKriteria from "./TableKriteria";
+export default function ModalKriteria({ analysisId }: { analysisId: string }) {
   return (
     <Dialog>
       <DialogTrigger className="underline hover:text-red-700">
-      Alternatif
+        Kriteria
       </DialogTrigger>
       <DialogContent onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>Alternatif</DialogTitle>
-          <DialogDescription>This action cannot be undone. if you remove</DialogDescription>
+          <DialogTitle>Kriteria</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. if you remove
+          </DialogDescription>
         </DialogHeader>
-        <TableAlternatif analysisId={analysisId} />
+        <TableKriteria analysisId={analysisId} />
       </DialogContent>
     </Dialog>
   );

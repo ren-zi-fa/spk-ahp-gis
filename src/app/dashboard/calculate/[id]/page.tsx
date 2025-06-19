@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
 
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
@@ -9,11 +11,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import InputAlternativesKriteria from "./_components/InputAlternativesKriteria";
-
-export default function UsersPage() {
+import Link from "next/link";
+export default function page() {
+  const params = useParams<{ id: string }>();
+  const router = useRouter();
+  console.log("from calculate", params.id);
   return (
-    <ContentLayout title="Analysis">
+    <ContentLayout title="AHP Process  ">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -24,12 +28,21 @@ export default function UsersPage() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/dashboard">Analysis</Link>
+              <Link href="/dashboard">Dashboard</Link>
             </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              <button
+                onClick={() => router.push(`/dashboard/create/${params.id}`)}
+              >
+                Input Data
+              </button>
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <InputAlternativesKriteria />
     </ContentLayout>
   );
 }

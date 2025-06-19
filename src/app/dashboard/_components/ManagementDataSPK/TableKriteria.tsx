@@ -32,29 +32,21 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
 
-export type Alternatif = {
+export type Kriteria = {
   id: string;
   name: string;
-  lat: number;
-  lang: number;
-  createdAt: string;
-  analysisId: string;
   analysis: {
     name: string;
   };
 };
 
-export default function TableAlternatif({
-  analysisId,
-}: {
-  analysisId: string;
-}) {
+export default function TableKriteria({ analysisId }: { analysisId: string }) {
   const {
-    data: alternatifData,
+    data: kriteriaData,
     error,
     isLoading,
     mutate,
-  } = useSWR<Alternatif[]>(`/api/alternatif?analysisId=${analysisId}`, fetcher);
+  } = useSWR<Kriteria[]>(`/api/kriteria?analysisId=${analysisId}`, fetcher);
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
@@ -66,9 +58,9 @@ export default function TableAlternatif({
       const ok = window.confirm("Yakin ingin menghapus data ini?");
       if (!ok) return;
       try {
-        await fetch(`/api/alternatif?id=${id}`, { method: "DELETE" });
+        await fetch(`/api/kriteria?id=${id}`, { method: "DELETE" });
         await mutate();
-        toast.success("alternatif berhasil dihapus");
+        toast.success("kriteria berhasil dihapus");
       } catch (e) {
         console.error(e);
         alert("Gagal menghapus data");
@@ -77,22 +69,12 @@ export default function TableAlternatif({
     [mutate]
   );
 
-  const columns = React.useMemo<ColumnDef<Alternatif>[]>(
+  const columns = React.useMemo<ColumnDef<Kriteria>[]>(
     () => [
       {
         accessorKey: "name",
-        header: "Nama Alternatif",
+        header: "Nama kriteria",
         cell: ({ row }) => <div>{row.getValue("name")}</div>,
-      },
-      {
-        accessorKey: "lat",
-        header: "Latitude",
-        cell: ({ row }) => <div>{row.getValue("lat")}</div>,
-      },
-      {
-        accessorKey: "lang",
-        header: "Longitude",
-        cell: ({ row }) => <div>{row.getValue("lang")}</div>,
       },
       {
         accessorKey: "analysis.name",
@@ -118,7 +100,7 @@ export default function TableAlternatif({
   );
 
   const table = useReactTable({
-    data: alternatifData ?? [],
+    data: kriteriaData ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

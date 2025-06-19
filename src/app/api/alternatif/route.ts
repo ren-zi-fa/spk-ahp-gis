@@ -50,7 +50,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -60,7 +59,7 @@ export async function GET(req: NextRequest) {
       where: analysisId ? { analysisId } : {},
       include: {
         analysis: {
-          select: { name: true }, 
+          select: { name: true },
         },
       },
       orderBy: {
@@ -73,6 +72,35 @@ export async function GET(req: NextRequest) {
     console.error("Error fetching alternatif:", error);
     return NextResponse.json(
       { error: "Gagal mengambil data alternatif" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Parameter id diperlukan." },
+        { status: 400 }
+      );
+    }
+
+    const deleted = await prisma.alternatif.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { message: "Alternatif berhasil dihapus", deleted },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting alternatif:", error);
+    return NextResponse.json(
+      { error: "Gagal menghapus data alternatif." },
       { status: 500 }
     );
   }

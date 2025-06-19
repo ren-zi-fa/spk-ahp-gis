@@ -23,8 +23,6 @@ model Analysis {
   id               String             @id @default(uuid())
   name             String
   createdAt        DateTime           @default(now())
-  
-  // Relasi ke data turunan
   kriteria         Kriteria[]
   alternatif       Alternatif[]
   criteriaMatrices CriteriaMatrix[]

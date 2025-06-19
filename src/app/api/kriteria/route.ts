@@ -34,3 +34,59 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const analysisId = searchParams.get("analysisId");
+
+    const kriteria = await prisma.kriteria.findMany({
+      where: analysisId ? { analysisId } : {},
+      include: {
+        analysis: {
+          select: { name: true },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json({ data: kriteria }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching kriteria:", error);
+    return NextResponse.json(
+      { error: "Gagal mengambil data kriteria" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Parameter id diperlukan." },
+        { status: 400 }
+      );
+    }
+
+    const deleted = await prisma.kriteria.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { message: "kriteria berhasil dihapus", deleted },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting kriteria:", error);
+    return NextResponse.json(
+      { error: "Gagal menghapus data kriteria." },
+      { status: 500 }
+    );
+  }
+}

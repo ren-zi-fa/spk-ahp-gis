@@ -12,7 +12,6 @@ import L from "leaflet";
 import React, { useMemo } from "react";
 
 import toast from "react-hot-toast";
-import { v4 as uuidv4 } from "uuid";
 
 import { pasamanBaratBoundary } from "@/lib/koordinat";
 import Geoman from "./Geoman";

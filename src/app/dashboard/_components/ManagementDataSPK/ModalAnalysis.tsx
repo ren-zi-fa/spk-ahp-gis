@@ -20,11 +20,11 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-type AnalysisValidation = z.infer<typeof AnalysisSchema>;
+type FormData = z.infer<typeof AnalysisSchema>;
 
 export default function ModalAnalysis() {
   const [open, setOpen] = useState(false);
-  const form = useForm<AnalysisValidation>({
+  const form = useForm<FormData>({
     resolver: zodResolver(AnalysisSchema),
     defaultValues: {
       analysisName: "",
@@ -34,15 +34,14 @@ export default function ModalAnalysis() {
 
   const { setError } = form;
 
-  const onSubmit = async (values: AnalysisValidation) => {
+  const onSubmit = async (values: FormData) => {
     const { analysisName } = values;
     try {
       const res = await fetch("/api/analysis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          analysisName,
-          id: uuidv4(),
+          analysisName
         }),
       });
 

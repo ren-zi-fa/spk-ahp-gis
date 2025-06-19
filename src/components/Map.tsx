@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { pasamanBaratBoundary } from "@/lib/koordinat";
 import Geoman from "./Geoman";
+import { mutate } from "swr";
 
 // Fix for marker icons not showing correctly
 
@@ -41,6 +42,7 @@ type Coordinates = {
 
 type MapProps = {
   coordinates: Coordinates[];
+  analysisId: string;
 };
 
 const pasamanBaratBoundaryReversed: L.LatLngTuple[] = pasamanBaratBoundary.map(
@@ -52,25 +54,28 @@ type AlternatifInput = {
   lang: number;
   lat: number;
 };
-export default function Map({ coordinates }: MapProps) {
+export default function Map({ coordinates, analysisId }: MapProps) {
   const addAlternatif = async ({ lang, lat, name }: AlternatifInput) => {
     try {
-      const id = uuidv4();
       const result = await fetch("/api/alternatif", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, name, lang, lat }),
+        body: JSON.stringify({
+          analysisId,
+          alternatif: [{ name, lat, lang }],
+        }),
       });
 
-      const data = await result.json();
-
-      if (!result.ok) {
-        throw new Error(data.message || "Terjadi kesalahan");
+      const res = await result.json();
+      if (result.ok) {
+        mutate("/api/alternatif");
+        alert(res.message);
+      } else {
+        alert(res.error || "Terjadi kesalahan");
       }
-
-      toast.success("berhasil menambahkan data");
     } catch (error: any) {
-      toast.error("data sudah di tambahkan", error);
+      toast.error("Gagal terhubung ke server");
+      console.error("Network error:", error);
     }
   };
 

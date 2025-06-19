@@ -11,3 +11,13 @@ export const KriteriaSchema = z.object({
     })
   ),
 });
+export const AlternatifSchema = z.object({
+  analysisId: z.string().uuid(),
+  alternatif: z.array(
+    z.object({
+      name: z.string().min(1),
+      lat: z.any(),
+      lang: z.any(),
+    })
+  ),
+});

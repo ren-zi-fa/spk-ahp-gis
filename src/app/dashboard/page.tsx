@@ -6,7 +6,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import InputAlternativesKriteria from "./_components/InputAlternativesKriteria";
@@ -18,15 +17,12 @@ export default function UsersPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">Home</Link>
+              <Link href="/dashboard" className="font-bold text-blue-500 ">
+                Analysis
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/dashboard">Analysis</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <InputAlternativesKriteria />

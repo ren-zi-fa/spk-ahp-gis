@@ -12,7 +12,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-export default function page() {
+import Pairwaise from "../_components/Pairwaise";
+export default function CalculatePage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   console.log("from calculate", params.id);
@@ -22,27 +23,32 @@ export default function page() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">Home</Link>
+              <Link href="/dashboard">Analysis</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/dashboard">Dashboard</Link>
-            </BreadcrumbLink>
+            <BreadcrumbPage
+              className="cursor-pointer hover:text-blue-500"
+              onClick={() => router.push(`/dashboard/create/${params.id}`)}
+            >
+              Input Data
+            </BreadcrumbPage>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
               <button
-                onClick={() => router.push(`/dashboard/create/${params.id}`)}
+                className="font-bold text-blue-500 "
+                onClick={() => router.push(`/dashboard/calculate/${params.id}`)}
               >
-                Input Data
+                Process Data
               </button>
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+      <Pairwaise analysisId={params.id} />
     </ContentLayout>
   );
 }

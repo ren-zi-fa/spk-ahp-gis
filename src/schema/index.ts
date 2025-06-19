@@ -21,3 +21,19 @@ export const AlternatifSchema = z.object({
     })
   ),
 });
+
+export const CriteriaMatrixSchema = z.object({
+  analysisId: z.string().uuid(),
+  data: z.array(z.array(z.string())),
+});
+
+export const AlternatifMatrixSchema = z.object({
+  analysisId: z.string().uuid(),
+  data: z.array(z.array(z.array(z.string()))),
+});
+
+export type MatrixRequestBody = {
+  criteriaMatrix: string[][];
+  alternativeMatrix: string[][][];
+  analysisId: string;
+};

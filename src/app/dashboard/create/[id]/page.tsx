@@ -13,7 +13,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import AlternatifKritera from "../../_components/ManagementDataSPK/AlternatifKritera";
 
-export default function page() {
+export default function CreatePage() {
   const params = useParams<{ id: string }>();
 
   console.log(params.id);
@@ -24,24 +24,20 @@ export default function page() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
               <Link href="/dashboard">Analysis</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Input Data</BreadcrumbPage>
+            <BreadcrumbPage className="font-bold text-blue-500 ">
+              Input Data
+            </BreadcrumbPage>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
               <button
-                className=""
+                className="cursor-pointer hover:text-blue-500"
                 onClick={() => router.push(`/dashboard/calculate/${params.id}`)}
               >
                 Process Data

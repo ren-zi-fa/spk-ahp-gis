@@ -12,11 +12,34 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useParams, useRouter } from "next/navigation";
 import AlternatifKritera from "../../_components/ManagementDataSPK/AlternatifKritera";
+import useSWR from "swr";
+import { Alternatif, Kriteria } from "@/types";
+import { fetcher } from "@/lib/fetcher";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function CreatePage() {
   const params = useParams<{ id: string }>();
+  const { data: kriteriaData, isLoading: loadingKriteria } = useSWR<Kriteria[]>(
+    `/api/kriteria?analysisId=${params.id}`,
+    fetcher
+  );
+  const { data: alternatifData, isLoading: loadingAlternatif } = useSWR<
+    Alternatif[]
+  >(`/api/alternatif?analysisId=${params.id}`, fetcher);
+  const nextButton = () => {
+    if (
+      !kriteriaData ||
+      kriteriaData.length === 0 ||
+      !alternatifData ||
+      alternatifData.length === 0
+    ) {
+      toast.error("Data kriteria dan alternatif belum lengkap");
+      return;
+    }
+    router.push(`/dashboard/calculate/${params.id}`);
+  };
 
-  console.log(params.id);
   const router = useRouter();
   return (
     <ContentLayout title="Input Data">
@@ -38,7 +61,7 @@ export default function CreatePage() {
             <BreadcrumbPage>
               <button
                 className="cursor-pointer hover:text-blue-500"
-                onClick={() => router.push(`/dashboard/calculate/${params.id}`)}
+                onClick={nextButton}
               >
                 Process Data
               </button>

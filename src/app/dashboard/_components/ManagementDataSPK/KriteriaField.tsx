@@ -33,13 +33,13 @@ export default function KriteriaFields({ name }: { name: "criteria" }) {
           >
             <Trash className="w-4 h-4" />
           </button>
-          {errors[name] ? (
-            <p className="text-red-500 text-3xl">The Field Error</p>
-          ) : (
-            ""
-          )}
         </div>
       ))}
+      {errors[name] ? (
+        <p className="text-red-500 text-xs">criteria should not empty</p>
+      ) : (
+        ""
+      )}
 
       <Button
         type="button"

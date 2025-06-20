@@ -31,14 +31,8 @@ import {
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
+import { Kriteria } from "@/types";
 
-export type Kriteria = {
-  id: string;
-  name: string;
-  analysis: {
-    name: string;
-  };
-};
 
 export default function TableKriteria({ analysisId }: { analysisId: string }) {
   const {

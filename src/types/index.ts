@@ -44,6 +44,8 @@ export type Kriteria = {
   };
 };
 
+
+
 export type Alternatif = {
   id: string;
   name: string;

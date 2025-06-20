@@ -11,9 +11,13 @@ import { toast } from "sonner";
 import { useState } from "react";
 import ModalAlternatif from "./ModalAlternatif";
 import ModalKriteria from "./ModalKriteria";
-import { FastForward } from "lucide-react";
+import { FastForward, Loader2 } from "lucide-react";
 import Map from "@/components/Map";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
+import { Kriteria } from "@/types";
+import { fetcher } from "@/lib/fetcher";
+import { Alternatif } from "./TableAlternatif";
 
 type FormData = z.infer<typeof KriteriaSchema>;
 export default function AlternatifKriteriaForm({ id }: { id: string }) {
@@ -25,10 +29,17 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
     },
   });
   const [isLoading, setIsLoading] = useState(false);
-
+  const { data: kriteriaData, isLoading: loadingKriteria } = useSWR<Kriteria[]>(
+    `/api/kriteria?analysisId=${id}`,
+    fetcher
+  );
+  const { data: alternatifData, isLoading: loadingAlternatif } = useSWR<
+    Alternatif[]
+  >(`/api/alternatif?analysisId=${id}`, fetcher);
   const onSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
+
       const res = await fetch("/api/kriteria", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,7 +60,28 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
     }
   };
 
+  const nextButton = () => {
+    if (
+      !kriteriaData ||
+      kriteriaData.length === 0 ||
+      !alternatifData ||
+      alternatifData.length === 0
+    ) {
+      toast.error("Data kriteria dan alternatif belum lengkap");
+      return;
+    }
+    router.push(`/dashboard/calculate/${id}`);
+  };
+
   const router = useRouter();
+  if (loadingKriteria || loadingAlternatif) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64">
+        <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+        <p className="mt-4 text-sm text-muted-foreground">Memuat data...</p>
+      </div>
+    );
+  }
   return (
     <>
       <div className="">
@@ -59,7 +91,7 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
           <ModalKriteria analysisId={id} />
           <button
             className="flex items-center gap-2 hover:text-red-500 underline"
-            onClick={() => router.push(`/dashboard/calculate/${id}`)}
+            onClick={nextButton}
           >
             <p>Process This data</p>
             <FastForward />

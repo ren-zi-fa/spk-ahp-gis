@@ -39,6 +39,7 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
   const onSubmit = async (data: MatrixFormData) => {
     try {
       setIsLoadings(true);
+
       const response = await fetch("/api/matrix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

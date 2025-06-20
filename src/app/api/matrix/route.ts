@@ -37,15 +37,12 @@ export async function POST(req: Request) {
       },
     });
 
-    // Simpan data alternatif baru
-    for (const altMatrix of parsedAlternatif.data) {
-      await prisma.alternativeMatrix.create({
-        data: {
-          analysisId: parsedAlternatif.analysisId,
-          data: altMatrix,
-        },
-      });
-    }
+    await prisma.alternativeMatrix.create({
+      data: {
+        analysisId: parsedAlternatif.analysisId,
+        data: parsedAlternatif.data,
+      },
+    });
 
     return NextResponse.json(
       { ok: true, message: "Data berhasil disimpan dan diperbarui." },

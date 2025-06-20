@@ -1,0 +1,30 @@
+@startuml
+title Activity Diagram - Proses Pengisian Data
+
+start
+
+:Input Nama Analisis;
+:Klik Simpan Analisis;
+:create record Analysis;
+
+:Input Data Kriteria;
+:create Kriteria records (loop);
+
+:Input Data Alternatif;
+:create Alternatif records (loop);
+
+:Input Matriks Kriteria;
+if (Data matrix sudah ada?) then (Ya)
+  :Delete semua CriteriaMatrix;
+endif
+:create CriteriaMatrix;
+
+:Input Matriks Alternatif per Kriteria;
+if (Data matrix sudah ada?) then (Ya)
+  :Delete semua AlternativeMatrix;
+endif
+:create AlternativeMatrix (loop);
+
+:Konfirmasi Penyimpanan;
+stop
+@enduml

@@ -1,47 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm, UseFormReturn } from "react-hook-form";
 import { MatrixTable } from "./MatriksTable";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-
-type Kriteria = {
-  id: string;
-  name: string;
-  createdAt: string;
-  analysisId: string;
-  analysis: {
-    name: string;
-  };
-};
-
-type Alternatif = {
-  id: string;
-  name: string;
-  lat: number;
-  lang: number;
-  createdAt: string;
-  analysisId: string;
-  analysis: {
-    name: string;
-  };
-};
-
-type ApiResponse = {
-  kriteria: Kriteria[];
-  alternatif: Alternatif[];
-};
-
-type MatrixFormData = {
-  critMatrix: string[][];
-  altMatrixes: string[][][];
-};
+import { ApiResponse, MatrixFormData } from "@/types";
 
 export default function Pairwaise({ analysisId }: { analysisId: string }) {
   const router = useRouter();
-
+  const [isLoadings, setIsLoadings] = useState(false);
   const { data: kriteriaAlternatif, isLoading } = useSWR<ApiResponse>(
     `/api/kriteria-alternatif?analysisId=${analysisId}`,
     fetcher
@@ -69,6 +38,7 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
 
   const onSubmit = async (data: MatrixFormData) => {
     try {
+      setIsLoadings(true);
       const response = await fetch("/api/matrix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,13 +52,16 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message);
+        router.push(`/dashboard/result/${analysisId}`);
       } else {
         alert(`Gagal: ${result.message}`);
+        return;
       }
     } catch (error) {
       alert("Terjadi kesalahan saat mengirim data.");
       console.error(error);
+    } finally {
+      setIsLoadings(false);
     }
   };
 
@@ -117,9 +90,10 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
             ))}
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded flex justify-center items-center"
+              disabled={isLoadings}
+              className="px-4 py-2 bg-blue-600 text-white rounded w-sm flex justify-center   mx-auto "
             >
-              Simpan
+              {isLoading ? "Processing..." : "Process"}
             </button>
           </form>
         )}

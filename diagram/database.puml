@@ -1,0 +1,51 @@
+@startuml spk-ahp
+title  Class Diagram
+
+entity Analysis {
+  *id : String [PK]
+  --
+  name : String
+  createdAt : DateTime
+}
+
+entity Kriteria {
+  *id : String [PK]
+  --
+  name : String
+  createdAt : DateTime
+  analysisId : String [FK]
+}
+
+entity Alternatif {
+  *id : String [PK]
+  --
+  name : String [unique]
+  lat : Float
+  lang : Float
+  createdAt : DateTime
+  analysisId : String [FK]
+}
+
+entity CriteriaMatrix {
+  *id : String [PK]
+  --
+  data : Json
+  createdAt : DateTime
+  analysisId : String [FK]
+}
+
+entity AlternativeMatrix {
+  *id : String [PK]
+  --
+  data : Json
+  createdAt : DateTime
+  analysisId : String [FK]
+}
+
+' Relations
+Analysis ||--o{ Kriteria : has
+Analysis ||--o{ Alternatif : has
+Analysis ||--o{ CriteriaMatrix : has
+Analysis ||--o{ AlternativeMatrix : has
+
+@enduml

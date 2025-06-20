@@ -18,8 +18,14 @@ export interface CompositeWeightChartProps {
 }
 
 const COLORS = [
-  "#4f46e5", "#10b981", "#f59e0b", "#ef4444",
-  "#6366f1", "#14b8a6", "#f43f5e", "#3b82f6",
+  "#4f46e5",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#6366f1",
+  "#14b8a6",
+  "#f43f5e",
+  "#3b82f6",
 ];
 
 export default function CompositeWeightChart({
@@ -30,11 +36,10 @@ export default function CompositeWeightChart({
     name: alternatifs[index]?.name ?? `A${index + 1}`,
     weight,
   }));
-
   return (
     <div className="mt-4">
       <h4 className="text-md font-medium mb-2">
-        Visualisasi Bobot Alternatif (Composite Weight)
+        Hasil Perengkingan (alternatif)
       </h4>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart

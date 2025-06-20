@@ -27,6 +27,7 @@ model Analysis {
   alternatif       Alternatif[]
   criteriaMatrices CriteriaMatrix[]
   alternativeMatrices AlternativeMatrix[]
+  hasilPerengkingan HasilPerengkingan[]
 }
 
 model Kriteria {
@@ -63,5 +64,12 @@ model AlternativeMatrix {
   analysis    Analysis @relation(fields: [analysisId], references: [id])
 }
 
+model HasilPerengkingan {
+  id          String   @id @default(uuid())
+  dataRangking        Json
+  createdAt   DateTime @default(now())
+  analysisId  String
+  analysis    Analysis @relation(fields: [analysisId], references: [id])
+}
 
 

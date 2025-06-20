@@ -10,6 +10,10 @@ import {
 import CompositeWeightChart from "./PerengkinganChart";
 import MatrixTable from "./HistoryCalculate";
 import CalculationInfo from "./InfoResult";
+import { toast } from "sonner";
+import { useRef } from "react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas-pro";
 
 type CriteriaMatrixData = string[][];
 type AlternativeMatrixData = string[][][];
@@ -66,6 +70,39 @@ export type KriteriaAlternatifResponse = {
 export default function ResultCalculation({
   analysisId,
 }: ResultCalculationProps) {
+  const pdfRef = useRef<HTMLDivElement>(null);
+  const exportToPDF = async () => {
+    if (!pdfRef.current) return;
+
+    const element = pdfRef.current;
+    const canvas = await html2canvas(element, { scale: 2 }); // scale untuk kualitas tinggi
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // Halaman pertama
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save(`hasil-perengkingan-${analysisId}.pdf`);
+  };
+
   const {
     data: matrixData,
     error,
@@ -104,7 +141,6 @@ export default function ResultCalculation({
     normalized: altNormalize,
     CR: altCR,
     lamdaMax: altLamdaMax,
-    sumAlt: altSumAlt,
     originalMatrix: altOriginalMatrix,
     RI: altRI,
     Ci: altCi,
@@ -116,71 +152,110 @@ export default function ResultCalculation({
     RI: RICrit,
     konsistensi: konsistensiCrit,
     lamdaMax: lamdaMaxCrit,
-    n: nCrit,
+
     normalizedMatrix: normalizedMatrixCrit,
     originalMatrix: originalMatrixCrit,
-    sumCrit: sumCritCrit,
-    weightsCriteria: weightsCriteriaCrit,
   } = calculcateCritMatrix(critMatrix);
+
+  const saveResult = async () => {
+    if (!data?.alternatif || !finalCompositeWeights) return;
+
+    // Buat object { namaAlternatif: bobot }
+    const result = data.alternatif.reduce((acc, alt, i) => {
+      acc[alt.name] = finalCompositeWeights[i];
+      return acc;
+    }, {} as Record<string, number>);
+
+    const res = await fetch("/api/hasil-rangking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        analysisId,
+        result,
+      }),
+    });
+
+    if (res.ok) {
+      toast.success("perengkingan berhasil di simpan ");
+    } else {
+      console.error("Gagal menyimpan hasil perengkingan");
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <CompositeWeightChart
-        weights={finalCompositeWeights}
-        alternatifs={data?.alternatif ?? []}
-      />
+      <div className="flex items-center gap-2 justify-between">
+        <button
+          onClick={saveResult}
+          className="px-2 py-1 mt-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Simpan Hasil Perengkingan
+        </button>
+        <button
+          onClick={exportToPDF}
+          className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Export perengkingan ke PDF
+        </button>
+      </div>
+      <div className="px-4" ref={pdfRef}>
+        <CompositeWeightChart
+          weights={finalCompositeWeights}
+          alternatifs={data?.alternatif ?? []}
+        />
 
-      {/* Matriks dan Info Kriteria */}
-      <MatrixTable
-        title="Matriks Perbandingan Kriteria"
-        headers={data?.kriteria.map((k) => k.name) ?? []}
-        data={originalMatrixCrit}
-        rowLabels={data?.kriteria.map((k) => k.name) ?? []}
-      />
-      <MatrixTable
-        title="Normalisasi Matriks Kriteria"
-        headers={data?.kriteria.map((k) => k.name) ?? []}
-        data={normalizedMatrixCrit}
-        rowLabels={data?.kriteria.map((k) => k.name) ?? []}
-      />
-      <CalculationInfo
-        lamdaMax={lamdaMaxCrit}
-        CI={CICTrit}
-        CR={CRCrit}
-        RI={RICrit}
-        konsistensi={konsistensiCrit}
-      />
+        {/* Matriks dan Info Kriteria */}
+        <MatrixTable
+          title="Matriks Perbandingan Kriteria"
+          headers={data?.kriteria.map((k) => k.name) ?? []}
+          data={originalMatrixCrit}
+          rowLabels={data?.kriteria.map((k) => k.name) ?? []}
+        />
+        <MatrixTable
+          title="Normalisasi Matriks Kriteria"
+          headers={data?.kriteria.map((k) => k.name) ?? []}
+          data={normalizedMatrixCrit}
+          rowLabels={data?.kriteria.map((k) => k.name) ?? []}
+        />
+        <CalculationInfo
+          lamdaMax={lamdaMaxCrit}
+          CI={CICTrit}
+          CR={CRCrit}
+          RI={RICrit}
+          konsistensi={konsistensiCrit}
+        />
 
-      {/* Matriks dan Info Alternatif */}
-      {altOriginalMatrix.map((matrix: any, idx: any) => (
-        <div key={idx} className="space-y-4">
-          <MatrixTable
-            title={`Matriks Perbandingan Alternatif untuk Kriteria ${
-              data?.kriteria[idx]?.name ?? `K${idx + 1}`
-            }`}
-            headers={data?.alternatif.map((a) => a.name) ?? []}
-            data={matrix}
-            rowLabels={data?.alternatif.map((a) => a.name) ?? []}
-          />
-          <MatrixTable
-            title={`Normalisasi Alternatif untuk Kriteria ${
-              data?.kriteria[idx]?.name ?? `K${idx + 1}`
-            }`}
-            headers={data?.alternatif.map((a) => a.name) ?? []}
-            data={altNormalize[idx]}
-            rowLabels={data?.alternatif.map((a) => a.name) ?? []}
-          />
-          <CalculationInfo
-            lamdaMax={altLamdaMax[idx]}
-            CI={altCi[idx]}
-            CR={altCR[idx]?.CR}
-            RI={altRI}
-            konsistensi={
-              altCR[idx]?.isConsistent ? "Konsisten" : "Tidak Konsisten"
-            }
-          />
-        </div>
-      ))}
+        {/* Matriks dan Info Alternatif */}
+        {altOriginalMatrix.map((matrix: any, idx: any) => (
+          <div key={idx} className="space-y-4">
+            <MatrixTable
+              title={`Matriks Perbandingan Alternatif untuk Kriteria ${
+                data?.kriteria[idx]?.name ?? `K${idx + 1}`
+              }`}
+              headers={data?.alternatif.map((a) => a.name) ?? []}
+              data={matrix}
+              rowLabels={data?.alternatif.map((a) => a.name) ?? []}
+            />
+            <MatrixTable
+              title={`Normalisasi Alternatif untuk Kriteria ${
+                data?.kriteria[idx]?.name ?? `K${idx + 1}`
+              }`}
+              headers={data?.alternatif.map((a) => a.name) ?? []}
+              data={altNormalize[idx]}
+              rowLabels={data?.alternatif.map((a) => a.name) ?? []}
+            />
+            <CalculationInfo
+              lamdaMax={altLamdaMax[idx]}
+              CI={altCi[idx]}
+              CR={altCR[idx]?.CR}
+              RI={altRI}
+              konsistensi={
+                altCR[idx]?.isConsistent ? "Konsisten" : "Tidak Konsisten"
+              }
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

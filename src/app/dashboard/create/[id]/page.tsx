@@ -52,7 +52,10 @@ export default function CreatePage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className="font-bold text-blue-500 ">
+            <BreadcrumbPage
+              className="text-blue-500 font-bold"
+              onClick={() => router.push(`/dashboard/create/${params.id}`)}
+            >
               Input Data
             </BreadcrumbPage>
           </BreadcrumbItem>

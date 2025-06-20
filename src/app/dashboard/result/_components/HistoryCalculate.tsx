@@ -23,9 +23,9 @@ export default function MatrixTable({
       <table className="table-auto border-collapse border w-full text-sm text-center shadow rounded">
         <thead>
           <tr>
-            <th className="border px-3 py-2 bg-gray-100 font-semibold">#</th>
+            <th className="border px-3 py-2 dark:bg-gray-500 bg-gray-100 font-semibold">#</th>
             {headers.map((header, idx) => (
-              <th key={idx} className="border px-3 py-2 bg-gray-100 font-semibold">
+              <th key={idx} className="border  dark:bg-gray-500 px-3 py-2 bg-gray-100 font-semibold">
                 {header}
               </th>
             ))}

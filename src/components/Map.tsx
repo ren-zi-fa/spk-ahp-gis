@@ -126,7 +126,7 @@ export default function Map({ coordinates, analysisId }: MapProps) {
           <Marker key={index} position={[coord.lat, coord.lng]}>
             <Popup>
               <div
-                className="cursor-pointer select-none"
+                className="cursor-pointer select-none p-2 block rounded"
                 id={coord.name}
                 onDoubleClick={() =>
                   addAlternatif({
@@ -137,6 +137,9 @@ export default function Map({ coordinates, analysisId }: MapProps) {
                 }
               >
                 {coord.name} <br />
+                <span className="text-xs bg-white text-white hover:text-black">
+                  Double click to add
+                </span>
               </div>
             </Popup>
           </Marker>

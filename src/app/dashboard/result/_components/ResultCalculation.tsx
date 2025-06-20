@@ -1,7 +1,7 @@
 "use client";
 
 import { fetcher } from "@/lib/fetcher";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import {
   calculcateCritMatrix,
   calculateAltMatrix,
@@ -177,6 +177,7 @@ export default function ResultCalculation({
 
     if (res.ok) {
       toast.success("perengkingan berhasil di simpan ");
+      mutate("/api/hasil-rangking");
     } else {
       console.error("Gagal menyimpan hasil perengkingan");
     }

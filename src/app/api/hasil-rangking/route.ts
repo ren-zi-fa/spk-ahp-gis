@@ -35,3 +35,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
+
+
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const analysisId = searchParams.get("analysisId");
+
+    if (!analysisId) {
+      return NextResponse.json(
+        { message: "Parameter 'analysisId' wajib disertakan" },
+        { status: 400 }
+      );
+    }
+
+    const result = await prisma.hasilPerengkingan.findFirst({
+      where: { analysisId },
+    });
+
+    if (!result) {
+      return NextResponse.json(
+        { message: "Data tidak ditemukan untuk analysisId tersebut" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ data: result }, { status: 200 });
+  } catch (error) {
+    console.error("GET /api/hasil-perengkingan", error);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
+  }
+}

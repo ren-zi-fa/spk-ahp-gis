@@ -11,13 +11,19 @@ import { toast } from "sonner";
 import { useState } from "react";
 import ModalAlternatif from "./ModalAlternatif";
 import ModalKriteria from "./ModalKriteria";
-import { FastForward, Loader2 } from "lucide-react";
+import { FastForward, Info, Loader2 } from "lucide-react";
 import Map from "@/components/Map";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Kriteria } from "@/types";
 import { fetcher } from "@/lib/fetcher";
 import { Alternatif } from "./TableAlternatif";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type FormData = z.infer<typeof KriteriaSchema>;
 export default function AlternatifKriteriaForm({ id }: { id: string }) {
@@ -101,6 +107,27 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
           <div className="col-span-9">
             <div className="flex items-center justify-center gap-2">
               <h1 className="text-center text-3xl mb-2">Alternatif</h1>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-blue-500 hover:bg-blue-400 cursor-pointer"
+                    size="icon"
+                    aria-label="Help"
+                  >
+                    <QuestionMarkCircledIcon className="text-white" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="bg-yellow-600 text-white">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-20 h-20 mt-1" />
+                    <p>
+                      Click icon dan double click pada nama kecamatan untuk
+                      menambahkan alternatif
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <Map coordinates={coordinatesAlternatif} analysisId={id} />
           </div>

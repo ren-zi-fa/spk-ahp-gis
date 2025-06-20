@@ -1,7 +1,7 @@
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 
-export default function DemoLayout({
-  children
+export default function DashboardLayout({
+  children,
 }: {
   children: React.ReactNode;
 }) {

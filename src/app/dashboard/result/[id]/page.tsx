@@ -19,7 +19,7 @@ export default function ResultPage() {
   console.log(id);
   const router = useRouter();
   return (
-    <ContentLayout title="Input Data">
+    <ContentLayout title="Result">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -29,7 +29,10 @@ export default function ResultPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className="cursor-pointer hover:text-blue-500 ">
+            <BreadcrumbPage
+              className="cursor-pointer hover:text-blue-500"
+              onClick={() => router.push(`/dashboard/create/${id}`)}
+            >
               Input Data
             </BreadcrumbPage>
           </BreadcrumbItem>

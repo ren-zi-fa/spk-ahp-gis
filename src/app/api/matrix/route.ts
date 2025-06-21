@@ -5,9 +5,11 @@ import {
   CriteriaMatrixSchema,
   MatrixRequestBody,
 } from "@/schema";
+import { requireAuth } from "@/lib/require-auth";
 
 export async function POST(req: Request) {
   try {
+    await requireAuth();
     const body: MatrixRequestBody = await req.json();
 
     const parsedKriteria = CriteriaMatrixSchema.parse({
@@ -20,7 +22,6 @@ export async function POST(req: Request) {
       data: body.alternativeMatrix,
     });
 
-    // Hapus data lama jika sudah ada untuk analysisId yang sama
     await prisma.criteriaMatrix.deleteMany({
       where: { analysisId: parsedKriteria.analysisId },
     });
@@ -29,7 +30,6 @@ export async function POST(req: Request) {
       where: { analysisId: parsedAlternatif.analysisId },
     });
 
-    // Simpan data kriteria baru
     await prisma.criteriaMatrix.create({
       data: {
         analysisId: parsedKriteria.analysisId,
@@ -49,7 +49,9 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Terjadi kesalahan:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
       { message: "Terjadi kesalahan pada server" },
       { status: 500 }
@@ -59,6 +61,7 @@ export async function POST(req: Request) {
 
 export async function GET(req: NextRequest) {
   try {
+    await requireAuth();
     const url = new URL(req.url);
     const analysisId = url.searchParams.get("analysisId");
 
@@ -69,12 +72,10 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Ambil data CriteriaMatrix berdasarkan analysisId
     const criteriaMatrix = await prisma.criteriaMatrix.findFirst({
       where: { analysisId },
     });
 
-    // Ambil semua data AlternativeMatrix berdasarkan analysisId
     const alternativeMatrix = await prisma.alternativeMatrix.findMany({
       where: { analysisId },
     });
@@ -89,7 +90,9 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Terjadi kesalahan:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
       { message: "Terjadi kesalahan pada server" },
       { status: 500 }

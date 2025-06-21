@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { Hop } from "lucide-react";
-import {  GitHubLogoIcon } from "@radix-ui/react-icons";
-
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LoginForm } from "@/components/LoginForm";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+  if (session) {
+    redirect("/dashboard");
+  }
   return (
     <div className="flex flex-col min-h-screen px-2">
       <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm dark:bg-black/[0.6] border-border/40">

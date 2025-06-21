@@ -1,9 +1,11 @@
 import { prisma } from "@/lib/database";
+import { requireAuth } from "@/lib/require-auth";
 import { AlternatifSchema } from "@/schema";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    await requireAuth();
     const body = await req.json();
     const parsed = AlternatifSchema.parse(body);
 
@@ -42,7 +44,9 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error saving alternatif:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
       { error: "Terjadi kesalahan saat menyimpan alternatif." },
       { status: 500 }
@@ -52,6 +56,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    await requireAuth();
     const { searchParams } = new URL(req.url);
     const analysisId = searchParams.get("analysisId");
 
@@ -98,9 +103,11 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting alternatif:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
-      { error: "Gagal menghapus data alternatif." },
+      { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );
   }

@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/database";
+import { requireAuth } from "@/lib/require-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    await requireAuth();
     const { searchParams } = new URL(req.url);
     const analysisId = searchParams.get("analysisId");
 
@@ -39,9 +41,11 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching kriteria & alternatif:", error);
-    return NextResponse.json(
-      { error: "Gagal mengambil data kriteria dan alternatif" },
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+      return NextResponse.json(
+      { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );
   }

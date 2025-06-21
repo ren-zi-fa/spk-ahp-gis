@@ -37,3 +37,13 @@ export type MatrixRequestBody = {
   alternativeMatrix: string[][][];
   analysisId: string;
 };
+
+export const LoginSchema = z.object({
+  username: z.string({
+    message: "username required",
+  }),
+  password: z.string().min(1, {
+    message: "Password is required",
+  }),
+  code: z.optional(z.string()),
+});

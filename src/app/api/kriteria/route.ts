@@ -1,20 +1,19 @@
 import { prisma } from "@/lib/database";
+import { requireAuth } from "@/lib/require-auth";
 import { KriteriaSchema } from "@/schema";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    await requireAuth();
     const body = await req.json();
     const parsed = KriteriaSchema.parse(body);
 
-    // Hapus semua kriteria lama untuk analysisId tersebut
     await prisma.kriteria.deleteMany({
       where: {
         analysisId: parsed.analysisId,
       },
     });
-
-    // Simpan kriteria baru
     const created = await prisma.kriteria.createMany({
       data: parsed.criteria.map((item) => ({
         name: item.name,
@@ -27,9 +26,11 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error saving kriteria:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
-      { error: "Terjadi kesalahan saat menyimpan kriteria." },
+      { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );
   }
@@ -37,6 +38,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    await requireAuth();
     const { searchParams } = new URL(req.url);
     const analysisId = searchParams.get("analysisId");
 
@@ -54,9 +56,11 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ data: kriteria }, { status: 200 });
   } catch (error) {
-    console.error("Error fetching kriteria:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
-      { error: "Gagal mengambil data kriteria" },
+      { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );
   }
@@ -64,6 +68,7 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    await requireAuth();
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
@@ -83,9 +88,11 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting kriteria:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
-      { error: "Gagal menghapus data kriteria." },
+      { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );
   }

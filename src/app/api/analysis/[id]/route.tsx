@@ -1,11 +1,13 @@
 import { prisma } from "@/lib/database";
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client"; // pastikan ini diimport
+import { requireAuth } from "@/lib/require-auth";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  await requireAuth();
   const id = (await params).id;
 
   if (!id) {
@@ -24,6 +26,9 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
         return NextResponse.json(
@@ -32,8 +37,6 @@ export async function DELETE(
         );
       }
     }
-
-    console.error("Error deleting analysis:", error);
     return NextResponse.json(
       { error: "Gagal menghapus data." },
       { status: 500 }
@@ -63,6 +66,9 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
         return NextResponse.json(
@@ -71,10 +77,8 @@ export async function GET(
         );
       }
     }
-
-    console.error("Error fetching analysis:", error);
     return NextResponse.json(
-      { error: "Gagal mengambil data." },
+      { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );
   }

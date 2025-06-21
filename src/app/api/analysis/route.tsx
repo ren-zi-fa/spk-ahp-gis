@@ -1,11 +1,14 @@
+// app/api/analysis/route.ts
 import { prisma } from "@/lib/database";
+import { requireAuth } from "@/lib/require-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
+    await requireAuth();
+
     const body = await req.json();
 
-    // Cek apakah nama sudah ada di database
     const existingAnalysis = await prisma.analysis.findFirst({
       where: { name: body.analysisName },
     });
@@ -17,7 +20,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Jika tidak ada, buat data baru
     await prisma.analysis.create({
       data: {
         id: body.id,
@@ -33,21 +35,10 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Terjadi kesalahan:", error);
-    return NextResponse.json(
-      { message: "Terjadi kesalahan pada server" },
-      { status: 500 }
-    );
-  }
-}
-export async function GET() {
-  try {
-    const data = await prisma.analysis.findMany();
-    return NextResponse.json({
-      success: true,
-      data: data,
-    });
-  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     console.error("Terjadi kesalahan:", error);
     return NextResponse.json(
       { message: "Terjadi kesalahan pada server" },
@@ -56,3 +47,25 @@ export async function GET() {
   }
 }
 
+export async function GET() {
+  try {
+    await requireAuth();
+
+    const data = await prisma.analysis.findMany();
+
+    return NextResponse.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    console.error("Terjadi kesalahan:", error);
+    return NextResponse.json(
+      { message: "Terjadi kesalahan pada server" },
+      { status: 500 }
+    );
+  }
+}

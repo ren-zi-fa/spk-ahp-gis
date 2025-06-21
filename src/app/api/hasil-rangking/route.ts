@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/database";
+import { requireAuth } from "@/lib/require-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    await requireAuth();
     const body = await req.json();
     const { analysisId, result } = body;
 
@@ -12,13 +14,10 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
-    // 🔍 Cek apakah sudah ada data hasil sebelumnya untuk analysisId
     await prisma.hasilPerengkingan.deleteMany({
       where: { analysisId: analysisId },
     });
 
-    // ✅ Simpan data baru
     const created = await prisma.hasilPerengkingan.create({
       data: {
         analysisId,
@@ -31,14 +30,16 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("POST /api/hasil-perengkingan", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
 
-
 export async function GET(req: NextRequest) {
   try {
+    await requireAuth();
     const { searchParams } = new URL(req.url);
     const analysisId = searchParams.get("analysisId");
 
@@ -62,7 +63,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ data: result }, { status: 200 });
   } catch (error) {
-    console.error("GET /api/hasil-perengkingan", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

@@ -39,3 +39,41 @@ export async function DELETE(
     );
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const id = (await params).id;
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Parameter id diperlukan." },
+      { status: 400 }
+    );
+  }
+  try {
+    const analysisName = await prisma.analysis.findFirst({
+      where: { id },
+    });
+    return NextResponse.json(
+      { success: true, data: analysisName },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error deleting analysis:", error);
+
+    if (error.code === "P2025") {
+      // Prisma: record not found
+      return NextResponse.json(
+        { error: "Data tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: "Gagal menghapus data." },
+      { status: 500 }
+    );
+  }
+}

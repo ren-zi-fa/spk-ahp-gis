@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas-pro";
+import { Alternatif, Analysis, Kriteria } from "@/types";
 
 type CriteriaMatrixData = string[][];
 type AlternativeMatrixData = string[][][];
@@ -40,29 +41,8 @@ interface GetMatricesResponse {
 interface ResultCalculationProps {
   analysisId: string;
 }
-export type Kriteria = {
-  id: string;
-  name: string;
-  createdAt: string;
-  analysisId: string;
-  analysis: {
-    name: string;
-  };
-};
 
-export type Alternatif = {
-  id: string;
-  name: string;
-  lat: number;
-  lang: number;
-  createdAt: string;
-  analysisId: string;
-  analysis: {
-    name: string;
-  };
-};
-
-export type KriteriaAlternatifResponse = {
+type KriteriaAlternatifResponse = {
   kriteria: Kriteria[];
   alternatif: Alternatif[];
 };
@@ -70,6 +50,10 @@ export type KriteriaAlternatifResponse = {
 export default function ResultCalculation({
   analysisId,
 }: ResultCalculationProps) {
+  const { data: analysisName } = useSWR<Analysis>(
+    `/api/analysis/${analysisId}`,
+    fetcher
+  );
   const pdfRef = useRef<HTMLDivElement>(null);
   const exportToPDF = async () => {
     if (!pdfRef.current) return;
@@ -100,7 +84,7 @@ export default function ResultCalculation({
       heightLeft -= pageHeight;
     }
 
-    pdf.save(`hasil-perengkingan-${analysisId}.pdf`);
+    pdf.save(`hasil-perengkingan-${analysisName?.name}.pdf`);
   };
 
   const {

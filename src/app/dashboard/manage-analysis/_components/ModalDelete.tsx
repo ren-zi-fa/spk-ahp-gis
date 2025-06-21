@@ -14,10 +14,12 @@ import { Trash } from "lucide-react";
 
 export default function ModalDelete({
   id,
+  name,
   handleDelete,
 }: {
   id: string;
-  handleDelete: (id: string) => void;
+  name: string;
+  handleDelete: (id: string, name: string) => void;
 }) {
   return (
     <AlertDialog>
@@ -30,13 +32,15 @@ export default function ModalDelete({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Data ini akan di hapus sisi server
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete(id)} className="bg-red-700 hover:bg-red-600">
+          <AlertDialogAction
+            onClick={() => handleDelete(id, name)}
+            className="bg-red-700 hover:bg-red-600"
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

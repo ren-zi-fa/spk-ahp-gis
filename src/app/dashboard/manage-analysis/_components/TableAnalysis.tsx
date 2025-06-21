@@ -32,12 +32,8 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
 import ModalDelete from "./ModalDelete";
+import { Analysis } from "@/types";
 
-export type Analysis = {
-  id: string;
-  name: string;
-  createdAt: string;
-};
 
 export default function TableAnalysis() {
   const {
@@ -47,23 +43,48 @@ export default function TableAnalysis() {
     mutate,
   } = useSWR<Analysis[]>(`/api/analysis`, fetcher);
 
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const deleteTimeouts = React.useRef<{ [key: string]: NodeJS.Timeout }>({});
+
   const handleDelete = React.useCallback(
-    async (id: string) => {
-      try {
-        await fetch(`/api/analysis/${id}`, { method: "DELETE" });
-        await mutate();
-        toast.success("analysis berhasil dihapus");
-      } catch (e) {
-        console.error(e);
-        alert("Gagal menghapus data");
-      }
+    (id: string, name: string) => {
+      if (!analysis) return;
+
+      const previous = analysis;
+      const newData = analysis.filter((a) => a.id !== id);
+      mutate(newData, false);
+
+      // Set timeout untuk eksekusi delete
+      const timeout = setTimeout(() => {
+        fetch(`/api/analysis/${id}`, { method: "DELETE" })
+          .then(() => mutate())
+          .catch(() => {
+            mutate(previous, false);
+            toast.error("Gagal menghapus data.");
+          });
+        delete deleteTimeouts.current[id];
+      }, 4000); // 4 detik, bisa diubah sesuai kebutuhan
+
+      deleteTimeouts.current[id] = timeout;
+
+      toast.success(` ${name} dihapus`, {
+        position: "bottom-right",
+        action: {
+          label: "Undo",
+          onClick: () => {
+            // Batalkan penghapusan
+            clearTimeout(deleteTimeouts.current[id]);
+            mutate(previous, false);
+          },
+        },
+      });
     },
-    [mutate]
+    [analysis, mutate]
   );
 
   const columns = React.useMemo<ColumnDef<Analysis>[]>(
@@ -97,7 +118,11 @@ export default function TableAnalysis() {
             <Button variant="ghost" size="icon" onClick={() => alert("hello")}>
               <Eye className="h-4 w-4 text-blue-400" />
             </Button>
-            <ModalDelete id={row.original.id} handleDelete={handleDelete} />
+            <ModalDelete
+              id={row.original.id}
+              name={row.original.name}
+              handleDelete={handleDelete}
+            />
           </div>
         ),
       },
@@ -191,7 +216,7 @@ export default function TableAnalysis() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Data Kosong
                 </TableCell>
               </TableRow>
             )}

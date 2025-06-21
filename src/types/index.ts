@@ -44,8 +44,11 @@ export type Kriteria = {
   };
 };
 
-
-
+export type Analysis = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
 export type Alternatif = {
   id: string;
   name: string;
@@ -67,4 +70,3 @@ export type MatrixFormData = {
   critMatrix: string[][];
   altMatrixes: string[][][];
 };
-

@@ -47,13 +47,13 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Manage Data",
       menus: [
         {
-          href: "/all-analysis",
-          label: "Analysis",
+          href: "/dashboard/manage-analysis",
+          label: "Manage Analysis",
           icon: Book,
         },
         {
-          href: "/all-result",
-          label: "Results",
+          href: "/dashboard/manage-result",
+          label: "Manage Results",
           icon: SquareChartGantt,
         },
       ],

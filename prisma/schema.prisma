@@ -28,6 +28,7 @@ model Analysis {
   criteriaMatrices CriteriaMatrix[]
   alternativeMatrices AlternativeMatrix[]
   hasilPerengkingan HasilPerengkingan[]
+    
 }
 
 model Kriteria {
@@ -35,7 +36,7 @@ model Kriteria {
   name        String
   createdAt   DateTime @default(now())
   analysisId  String
-  analysis    Analysis @relation(fields: [analysisId], references: [id])
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 }
 
 model Alternatif {
@@ -45,7 +46,7 @@ model Alternatif {
   lang        Float
   createdAt   DateTime @default(now())
   analysisId  String
-  analysis    Analysis @relation(fields: [analysisId], references: [id])
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 }
 
 model CriteriaMatrix {
@@ -53,7 +54,7 @@ model CriteriaMatrix {
   data        Json
   createdAt   DateTime @default(now())
   analysisId  String
-  analysis    Analysis @relation(fields: [analysisId], references: [id])
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 }
 
 model AlternativeMatrix {
@@ -61,7 +62,7 @@ model AlternativeMatrix {
   data        Json
   createdAt   DateTime @default(now())
   analysisId  String
-  analysis    Analysis @relation(fields: [analysisId], references: [id])
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 }
 
 model HasilPerengkingan {
@@ -69,7 +70,7 @@ model HasilPerengkingan {
   dataRangking        Json
   createdAt   DateTime @default(now())
   analysisId  String
-  analysis    Analysis @relation(fields: [analysisId], references: [id])
+  analysis    Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 }
 
 

@@ -31,6 +31,7 @@ import {
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
+import MyLoading from "@/components/MyLoading";
 
 export type Alternatif = {
   id: string;
@@ -134,7 +135,7 @@ export default function TableAlternatif({
   });
 
   if (error) return <div>Failed to load data</div>;
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <MyLoading />;
 
   return (
     <div className="w-full">
@@ -156,7 +157,7 @@ export default function TableAlternatif({
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {column.id === "actions" ? "hapus" : column.id}
+                  {column.id === "actions" ? "actions" : column.id}
                 </DropdownMenuCheckboxItem>
               ))}
           </DropdownMenuContent>

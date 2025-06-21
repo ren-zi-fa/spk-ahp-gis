@@ -15,6 +15,7 @@ import { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas-pro";
 import { Alternatif, Analysis, Kriteria } from "@/types";
+import MyLoading from "@/components/MyLoading";
 
 type CriteriaMatrixData = string[][];
 type AlternativeMatrixData = string[][][];
@@ -104,8 +105,7 @@ export default function ResultCalculation({
     console.log(data.alternatif.map((item) => item.name));
   }
 
-  if (isLoading)
-    return <div className="text-gray-500 text-sm">Memuat data matriks...</div>;
+  if (isLoading) return <MyLoading />;
   if (error)
     return (
       <div className="text-red-500 text-sm">Gagal memuat data matriks.</div>

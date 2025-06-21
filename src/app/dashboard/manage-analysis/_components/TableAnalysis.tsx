@@ -11,7 +11,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown, Eye, Trash2 } from "lucide-react";
+import { ChevronDown, Eye, SquarePen, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +33,9 @@ import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
 import ModalDelete from "./ModalDelete";
 import { Analysis } from "@/types";
-
+import { ModalRangking } from "./ModalRangking";
+import { useRouter } from "next/navigation";
+import MyLoading from "@/components/MyLoading";
 
 export default function TableAnalysis() {
   const {
@@ -42,8 +44,7 @@ export default function TableAnalysis() {
     isLoading,
     mutate,
   } = useSWR<Analysis[]>(`/api/analysis`, fetcher);
-
-
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -68,7 +69,7 @@ export default function TableAnalysis() {
             toast.error("Gagal menghapus data.");
           });
         delete deleteTimeouts.current[id];
-      }, 4000); // 4 detik, bisa diubah sesuai kebutuhan
+      }, 7000); // 7 detik, bisa diubah sesuai kebutuhan
 
       deleteTimeouts.current[id] = timeout;
 
@@ -114,9 +115,16 @@ export default function TableAnalysis() {
         header: "Actions",
         enableSorting: false,
         cell: ({ row }) => (
-          <div>
-            <Button variant="ghost" size="icon" onClick={() => alert("hello")}>
-              <Eye className="h-4 w-4 text-blue-400" />
+          <div className="flex justify-center ">
+            <ModalRangking id={row.original.id} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                router.push(`/dashboard/create/${row.original.id}`)
+              }
+            >
+              <SquarePen className="h-7 w-7 text-green-400" />
             </Button>
             <ModalDelete
               id={row.original.id}
@@ -147,7 +155,7 @@ export default function TableAnalysis() {
   });
 
   if (error) return <div>Failed to load data</div>;
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <MyLoading />;
 
   return (
     <div className="w-full">
@@ -169,7 +177,7 @@ export default function TableAnalysis() {
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {column.id === "actions" ? "hapus" : column.id}
+                  {column.id === "actions" ? "actions" : column.id}
                 </DropdownMenuCheckboxItem>
               ))}
           </DropdownMenuContent>

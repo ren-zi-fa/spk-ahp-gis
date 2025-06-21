@@ -16,7 +16,6 @@ import ResultCalculation from "../_components/ResultCalculation";
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
-  console.log(id);
   const router = useRouter();
   return (
     <ContentLayout title="Result">
@@ -55,7 +54,7 @@ export default function ResultPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <ResultCalculation analysisId={id} />
+      <ResultCalculation analysisId={id}  />
     </ContentLayout>
   );
 }

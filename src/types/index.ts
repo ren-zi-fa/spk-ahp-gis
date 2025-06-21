@@ -70,3 +70,10 @@ export type MatrixFormData = {
   critMatrix: string[][];
   altMatrixes: string[][][];
 };
+
+export interface HasilPerengkinganData {
+  id: string;
+  dataRangking: Record<string, number>;
+  createdAt: string;  
+  analysisId: string;
+}

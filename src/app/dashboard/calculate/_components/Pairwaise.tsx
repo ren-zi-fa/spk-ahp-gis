@@ -7,6 +7,7 @@ import { MatrixTable } from "./MatriksTable";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { ApiResponse, MatrixFormData } from "@/types";
+import MyLoading from "@/components/MyLoading";
 
 export default function Pairwaise({ analysisId }: { analysisId: string }) {
   const router = useRouter();
@@ -70,7 +71,7 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
     <div className="w-[85%] mx-auto">
       <FormProvider {...methods}>
         {isLoading || !kriteriaAlternatif ? (
-          <div>Loading....</div>
+          <MyLoading />
         ) : (
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="mb-8 mt-10">

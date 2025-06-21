@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -7,20 +9,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import TableAlternatif from "./TableAlternatif";
+import { useState } from "react";
 export default function ModalAlternatif({
   analysisId,
 }: {
   analysisId: string;
 }) {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="underline hover:text-red-700">
-      Alternatif
+        Alternatif
       </DialogTrigger>
       <DialogContent onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Alternatif</DialogTitle>
-          <DialogDescription>This action cannot be undone. if you remove</DialogDescription>
+          <DialogDescription>
+            This action cannot be undone. if you remove
+          </DialogDescription>
         </DialogHeader>
         <TableAlternatif analysisId={analysisId} />
       </DialogContent>

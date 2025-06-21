@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "dashboard",
+  title: "My-SPK",
   description:
     "sebuah system yang berfungsi untuk membandingkan alternatif wilayah kecamatan yang ada di pasaman barat untuk keperluan pemilihan lahan kosong ",
 };

@@ -1,14 +1,8 @@
 import {
-  Tag,
-  Users,
-  Settings,
-  Bookmark,
-  SquarePen,
-  LayoutGrid,
   LucideIcon,
   FileChartColumnIncreasing,
   Book,
-  SquareChartGantt,
+  User,
 } from "lucide-react";
 
 type Submenu = {
@@ -30,6 +24,7 @@ type Group = {
   menus: Menu[];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getMenuList(pathname: string): Group[] {
   return [
     {
@@ -52,9 +47,9 @@ export function getMenuList(pathname: string): Group[] {
           icon: Book,
         },
         {
-          href: "/dashboard/manage-result",
-          label: "Manage Results",
-          icon: SquareChartGantt,
+          href: "/dashboard/account",
+          label: "Account",
+          icon: User,
         },
       ],
     },

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/database";
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client"; // pastikan ini diimport
 
 export async function DELETE(
   request: NextRequest,
@@ -22,17 +23,17 @@ export async function DELETE(
       { message: "Data berhasil dihapus", deleted },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.error("Error deleting analysis:", error);
-
-    if (error.code === "P2025") {
-      // Prisma: record not found
-      return NextResponse.json(
-        { error: "Data tidak ditemukan." },
-        { status: 404 }
-      );
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        return NextResponse.json(
+          { error: "Data tidak ditemukan." },
+          { status: 404 }
+        );
+      }
     }
 
+    console.error("Error deleting analysis:", error);
     return NextResponse.json(
       { error: "Gagal menghapus data." },
       { status: 500 }
@@ -52,6 +53,7 @@ export async function GET(
       { status: 400 }
     );
   }
+
   try {
     const analysisName = await prisma.analysis.findFirst({
       where: { id },
@@ -60,19 +62,19 @@ export async function GET(
       { success: true, data: analysisName },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.error("Error deleting analysis:", error);
-
-    if (error.code === "P2025") {
-      // Prisma: record not found
-      return NextResponse.json(
-        { error: "Data tidak ditemukan." },
-        { status: 404 }
-      );
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        return NextResponse.json(
+          { error: "Data tidak ditemukan." },
+          { status: 404 }
+        );
+      }
     }
 
+    console.error("Error fetching analysis:", error);
     return NextResponse.json(
-      { error: "Gagal menghapus data." },
+      { error: "Gagal mengambil data." },
       { status: 500 }
     );
   }

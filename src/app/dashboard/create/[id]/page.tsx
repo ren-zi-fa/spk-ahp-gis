@@ -16,17 +16,17 @@ import useSWR from "swr";
 import { Alternatif, Kriteria } from "@/types";
 import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 
 export default function CreatePage() {
   const params = useParams<{ id: string }>();
-  const { data: kriteriaData, isLoading: loadingKriteria } = useSWR<Kriteria[]>(
+  const { data: kriteriaData } = useSWR<Kriteria[]>(
     `/api/kriteria?analysisId=${params.id}`,
     fetcher
   );
-  const { data: alternatifData, isLoading: loadingAlternatif } = useSWR<
-    Alternatif[]
-  >(`/api/alternatif?analysisId=${params.id}`, fetcher);
+  const { data: alternatifData } = useSWR<Alternatif[]>(
+    `/api/alternatif?analysisId=${params.id}`,
+    fetcher
+  );
   const nextButton = () => {
     if (
       !kriteriaData ||

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
 import talamau from "../../talamau.json";
 import luhakNanduo from "../../luhakNanduo.json";
 import gunungTuleh from "../../gunungTuleh.json";

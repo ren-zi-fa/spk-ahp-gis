@@ -11,7 +11,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown, Eye, SquarePen, Trash2 } from "lucide-react";
+import { ChevronDown, SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +44,7 @@ export default function TableAnalysis() {
     isLoading,
     mutate,
   } = useSWR<Analysis[]>(`/api/analysis`, fetcher);
+
   const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
@@ -69,7 +70,7 @@ export default function TableAnalysis() {
             toast.error("Gagal menghapus data.");
           });
         delete deleteTimeouts.current[id];
-      }, 7000); // 7 detik, bisa diubah sesuai kebutuhan
+      }, 5000); // 5 detik, bisa diubah sesuai kebutuhan
 
       deleteTimeouts.current[id] = timeout;
 
@@ -90,6 +91,13 @@ export default function TableAnalysis() {
 
   const columns = React.useMemo<ColumnDef<Analysis>[]>(
     () => [
+      {
+        id: "no",
+        header: "No",
+        cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
+        enableSorting: false,
+        size: 30,
+      },
       {
         accessorKey: "createdAt",
         header: "Waktu Dibuat",
@@ -135,7 +143,7 @@ export default function TableAnalysis() {
         ),
       },
     ],
-    [handleDelete]
+    [handleDelete, router]
   );
 
   const table = useReactTable({

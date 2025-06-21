@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any*/
+
 import { fetcher } from "@/lib/fetcher";
 import useSWR, { mutate } from "swr";
 import {
@@ -16,6 +18,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas-pro";
 import { Alternatif, Analysis, Kriteria } from "@/types";
 import MyLoading from "@/components/MyLoading";
+import { CircleAlert } from "lucide-react";
 
 type CriteriaMatrixData = string[][];
 type AlternativeMatrixData = string[][][];
@@ -55,16 +58,17 @@ export default function ResultCalculation({
     `/api/analysis/${analysisId}`,
     fetcher
   );
+
   const pdfRef = useRef<HTMLDivElement>(null);
+
   const exportToPDF = async () => {
     if (!pdfRef.current) return;
 
     const element = pdfRef.current;
-    const canvas = await html2canvas(element, { scale: 2 }); // scale untuk kualitas tinggi
+    const canvas = await html2canvas(element, { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF("p", "mm", "a4");
-
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -74,7 +78,6 @@ export default function ResultCalculation({
     let heightLeft = imgHeight;
     let position = 0;
 
-    // Halaman pertama
     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
 
@@ -96,14 +99,11 @@ export default function ResultCalculation({
     `/api/matrix?analysisId=${analysisId}`,
     fetcher
   );
+
   const { data } = useSWR<KriteriaAlternatifResponse>(
     `/api/kriteria-alternatif?analysisId=${analysisId}`,
     fetcher
   );
-  if (data) {
-    console.log(data.kriteria.map((item) => item.name));
-    console.log(data.alternatif.map((item) => item.name));
-  }
 
   if (isLoading) return <MyLoading />;
   if (error)
@@ -111,6 +111,19 @@ export default function ResultCalculation({
       <div className="text-red-500 text-sm">Gagal memuat data matriks.</div>
     );
   if (!matrixData) return null;
+
+  // CEK jika data kriteria atau alternatif kosong
+  if (!data?.kriteria?.length || !data?.alternatif?.length) {
+    return (
+      <div className="flex flex-col justify-center items-center  gap-4 text-red-600 text-lg text-center">
+        <CircleAlert className="w-12 h-12" />
+        <p>
+          Upss!!! Anda belum melakukan proses <br /> perhitungan data pada
+          analisis ini.
+        </p>
+      </div>
+    );
+  }
 
   const critMatrix = matrixData.criteriaMatrix?.data ?? [];
   const altMatrix = matrixData.alternativeMatrix?.[0]?.data ?? [];
@@ -121,6 +134,7 @@ export default function ResultCalculation({
     altResult.weightAlt,
     critResult.weightsCriteria
   );
+
   const {
     normalized: altNormalize,
     CR: altCR,
@@ -128,7 +142,7 @@ export default function ResultCalculation({
     originalMatrix: altOriginalMatrix,
     RI: altRI,
     Ci: altCi,
-  } = calculateAltMatrix(altMatrix);
+  } = altResult;
 
   const {
     CI: CICTrit,
@@ -136,15 +150,13 @@ export default function ResultCalculation({
     RI: RICrit,
     konsistensi: konsistensiCrit,
     lamdaMax: lamdaMaxCrit,
-
     normalizedMatrix: normalizedMatrixCrit,
     originalMatrix: originalMatrixCrit,
-  } = calculcateCritMatrix(critMatrix);
+  } = critResult;
 
   const saveResult = async () => {
     if (!data?.alternatif || !finalCompositeWeights) return;
 
-    // Buat object { namaAlternatif: bobot }
     const result = data.alternatif.reduce((acc, alt, i) => {
       acc[alt.name] = finalCompositeWeights[i];
       return acc;
@@ -160,7 +172,7 @@ export default function ResultCalculation({
     });
 
     if (res.ok) {
-      toast.success("perengkingan berhasil di simpan ");
+      toast.success("Perengkingan berhasil disimpan");
       mutate("/api/hasil-rangking");
     } else {
       console.error("Gagal menyimpan hasil perengkingan");
@@ -183,24 +195,24 @@ export default function ResultCalculation({
           Export perengkingan ke PDF
         </button>
       </div>
+
       <div className="px-4" ref={pdfRef}>
         <CompositeWeightChart
           weights={finalCompositeWeights}
-          alternatifs={data?.alternatif ?? []}
+          alternatifs={data.alternatif}
         />
 
-        {/* Matriks dan Info Kriteria */}
         <MatrixTable
           title="Matriks Perbandingan Kriteria"
-          headers={data?.kriteria.map((k) => k.name) ?? []}
+          headers={data.kriteria.map((k) => k.name)}
           data={originalMatrixCrit}
-          rowLabels={data?.kriteria.map((k) => k.name) ?? []}
+          rowLabels={data.kriteria.map((k) => k.name)}
         />
         <MatrixTable
           title="Normalisasi Matriks Kriteria"
-          headers={data?.kriteria.map((k) => k.name) ?? []}
+          headers={data.kriteria.map((k) => k.name)}
           data={normalizedMatrixCrit}
-          rowLabels={data?.kriteria.map((k) => k.name) ?? []}
+          rowLabels={data.kriteria.map((k) => k.name)}
         />
         <CalculationInfo
           lamdaMax={lamdaMaxCrit}
@@ -210,24 +222,23 @@ export default function ResultCalculation({
           konsistensi={konsistensiCrit}
         />
 
-        {/* Matriks dan Info Alternatif */}
         {altOriginalMatrix.map((matrix: any, idx: any) => (
           <div key={idx} className="space-y-4">
             <MatrixTable
               title={`Matriks Perbandingan Alternatif untuk Kriteria ${
-                data?.kriteria[idx]?.name ?? `K${idx + 1}`
+                data.kriteria[idx]?.name ?? `K${idx + 1}`
               }`}
-              headers={data?.alternatif.map((a) => a.name) ?? []}
+              headers={data.alternatif.map((a) => a.name)}
               data={matrix}
-              rowLabels={data?.alternatif.map((a) => a.name) ?? []}
+              rowLabels={data.alternatif.map((a) => a.name)}
             />
             <MatrixTable
               title={`Normalisasi Alternatif untuk Kriteria ${
-                data?.kriteria[idx]?.name ?? `K${idx + 1}`
+                data.kriteria[idx]?.name ?? `K${idx + 1}`
               }`}
-              headers={data?.alternatif.map((a) => a.name) ?? []}
+              headers={data.alternatif.map((a) => a.name)}
               data={altNormalize[idx]}
-              rowLabels={data?.alternatif.map((a) => a.name) ?? []}
+              rowLabels={data.alternatif.map((a) => a.name)}
             />
             <CalculationInfo
               lamdaMax={altLamdaMax[idx]}

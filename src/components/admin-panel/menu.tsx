@@ -13,7 +13,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-  TooltipProvider
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 
 interface MenuProps {
@@ -23,6 +23,9 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
+  function isMenuActive(href: string, pathname: string) {
+    return pathname === href || pathname.startsWith(href + "/");
+  }
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -60,7 +63,7 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={
                                 (active === undefined &&
-                                  pathname.startsWith(href)) ||
+                                  isMenuActive(href, pathname)) ||
                                 active
                                   ? "secondary"
                                   : "ghost"

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import {
   Form,
@@ -33,7 +33,7 @@ export function LoginForm({
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -43,17 +43,27 @@ export function LoginForm({
   });
 
   const onSubmit = async (values: FormValues) => {
-    const res = await signIn("credentials", {
-      redirect: false,
-      username: values.username,
-      password: values.password,
-    });
+    setLoading(true);
+    setLoginError("");
 
-    if (!res?.ok || res.error) {
-      setLoginError("Username atau password salah.");
-    } else {
-      setLoginError("");
-      router.push("/dashboard"); // arahkan ke halaman setelah login
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        username: values.username,
+        password: values.password,
+        callbackUrl: "/dashboard",
+      });
+
+      if (res?.error) {
+        setLoginError("Username atau password salah");
+      } else if (res?.ok && res.url) {
+        router.push(res.url);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoginError("Terjadi kesalahan saat login");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,8 +133,12 @@ export function LoginForm({
                 <p className="text-sm text-center text-red-600">{loginError}</p>
               )}
 
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Login"
+                )}
               </Button>
             </form>
           </Form>
@@ -140,11 +154,6 @@ export function LoginForm({
           </div>
         </CardContent>
       </Card>
-
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   );
 }

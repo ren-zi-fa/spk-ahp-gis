@@ -30,7 +30,7 @@ export default function ListAnalysis() {
         <CircleAlertIcon />
         <span className="sr-only">Info</span>
         <div>
-          <span className="font-medium ms-2">Click Nama Anlysis di bawah</span>
+          <span className="font-medium ms-2">Click Nama Anlysis di bawah </span>
           untuk melakukan process AHP
         </div>
       </div>

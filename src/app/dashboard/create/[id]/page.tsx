@@ -13,7 +13,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import AlternatifKritera from "../../_components/ManagementDataSPK/AlternatifKritera";
 import useSWR from "swr";
-import { Alternatif, Kriteria } from "@/types";
+import { Alternatif, Analysis, Kriteria } from "@/types";
 import { fetcher } from "@/lib/fetcher";
 import { toast } from "sonner";
 
@@ -25,6 +25,10 @@ export default function CreatePage() {
   );
   const { data: alternatifData } = useSWR<Alternatif[]>(
     `/api/alternatif?analysisId=${params.id}`,
+    fetcher
+  );
+  const { data: analysisData } = useSWR<Analysis>(
+    `/api/analysis/${params.id}`,
     fetcher
   );
   const nextButton = () => {
@@ -42,7 +46,9 @@ export default function CreatePage() {
 
   const router = useRouter();
   return (
-    <ContentLayout title="Input Data">
+    <ContentLayout
+      title={"Input Data " + (analysisData ? analysisData.name : "")}
+    >
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

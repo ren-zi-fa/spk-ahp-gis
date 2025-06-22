@@ -67,7 +67,7 @@ export default function TableAlternatif({
       const ok = window.confirm("Yakin ingin menghapus data ini?");
       if (!ok) return;
       try {
-        await fetch(`/api/alternatif?id=${id}`, { method: "DELETE" });
+        await fetch(`/api/alternatif/${id}`, { method: "DELETE" });
         await mutate();
         toast.success("alternatif berhasil dihapus");
       } catch (e) {

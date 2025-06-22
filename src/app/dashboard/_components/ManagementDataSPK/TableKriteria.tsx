@@ -52,7 +52,7 @@ export default function TableKriteria({ analysisId }: { analysisId: string }) {
       const ok = window.confirm("Yakin ingin menghapus data ini?");
       if (!ok) return;
       try {
-        await fetch(`/api/kriteria?id=${id}`, { method: "DELETE" });
+        await fetch(`/api/kriteria/${id}`, { method: "DELETE" });
         await mutate();
         toast.success("kriteria berhasil dihapus");
       } catch (e) {

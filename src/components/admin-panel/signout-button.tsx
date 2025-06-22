@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 
 interface Props {
-  isOpen: boolean;
+  isOpen?: boolean;
 }
 
 export function SignOutButton({ isOpen }: Props) {

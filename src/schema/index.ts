@@ -39,11 +39,6 @@ export type MatrixRequestBody = {
 };
 
 export const LoginSchema = z.object({
-  username: z.string({
-    message: "username required",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
-  code: z.optional(z.string()),
+  username: z.string().min(1, "Username wajib diisi"),
+  password: z.string().min(1, "Password wajib diisi"),
 });

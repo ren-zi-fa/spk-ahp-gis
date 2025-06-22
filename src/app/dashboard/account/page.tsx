@@ -4,6 +4,7 @@ import {
   BreadcrumbItem,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
+import AccountsCard from "./_components/AccountsCard";
 
 export default function ManageUser() {
   return (
@@ -13,6 +14,7 @@ export default function ManageUser() {
           <BreadcrumbItem></BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+      <AccountsCard />
     </ContentLayout>
   );
 }

@@ -13,12 +13,19 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import ResultCalculation from "../_components/ResultCalculation";
+import useSWR from "swr";
+import { Analysis } from "@/types";
+import { fetcher } from "@/lib/fetcher";
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { data: analysisData } = useSWR<Analysis>(
+    `/api/analysis/${id}`,
+    fetcher
+  );
   return (
-    <ContentLayout title="Result">
+    <ContentLayout title={"Result " + (analysisData ? analysisData.name : "")}>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -54,7 +61,7 @@ export default function ResultPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <ResultCalculation analysisId={id}  />
+      <ResultCalculation analysisId={id} />
     </ContentLayout>
   );
 }

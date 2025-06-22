@@ -15,6 +15,7 @@ import Link from "next/link";
 import Pairwaise from "../_components/Pairwaise";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
+import { Analysis } from "@/types";
 
 export type HasilPerengkinganResponse = {
   id: string;
@@ -31,9 +32,14 @@ export default function CalculatePage() {
     `/api/hasil-rangking?analysisId=${params.id}`,
     fetcher
   );
-
+  const { data: analysisData } = useSWR<Analysis>(
+    `/api/analysis/${params.id}`,
+    fetcher
+  );
   return (
-    <ContentLayout title="AHP Process  ">
+    <ContentLayout
+      title={"Process AHP " + (analysisData ? analysisData.name : "")}
+    >
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

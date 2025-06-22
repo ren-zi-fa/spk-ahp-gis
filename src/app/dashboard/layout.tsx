@@ -1,7 +1,7 @@
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
+import { auth } from "@/lib/auth/auth";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 export const metadata: Metadata = {
   title: "Dashboard",
   description:

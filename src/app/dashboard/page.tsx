@@ -1,4 +1,3 @@
-import Link from "next/link";
 
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
@@ -6,7 +5,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import InputAlternativesKriteria from "./_components/InputAlternativesKriteria";
 
@@ -16,13 +14,8 @@ export default function UsersPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/dashboard" className="font-bold text-blue-500 ">
-                Analysis
-              </Link>
-            </BreadcrumbLink>
+            <BreadcrumbLink />
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
         </BreadcrumbList>
       </Breadcrumb>
       <InputAlternativesKriteria />

@@ -1,6 +1,6 @@
 // app/api/analysis/route.ts
 import { prisma } from "@/lib/database";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

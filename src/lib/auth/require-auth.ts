@@ -1,6 +1,6 @@
-// lib/require-auth.ts
-import { auth } from "@/lib/auth";
+
 import { User } from "next-auth";
+import { auth } from "./auth";
 
 export async function requireAuth(): Promise<User> {
   const session = await auth();

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/database";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-      return NextResponse.json(
+    return NextResponse.json(
       { message: "Terjadi kesalahan pada server" },
       { status: 500 }
     );

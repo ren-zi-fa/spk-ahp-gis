@@ -5,7 +5,7 @@ import {
   CriteriaMatrixSchema,
   MatrixRequestBody,
 } from "@/schema";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 export async function POST(req: Request) {
   try {

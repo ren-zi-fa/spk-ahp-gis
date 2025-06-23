@@ -29,7 +29,7 @@ export default function CalculatePage() {
   const router = useRouter();
 
   const { data } = useSWR<HasilPerengkinganResponse>(
-    `/api/hasil-rangking?analysisId=${params.id}`,
+    `/api/hasil-rangking/${params.id}`,
     fetcher
   );
   const { data: analysisData } = useSWR<Analysis>(

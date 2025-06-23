@@ -58,25 +58,31 @@ export async function GET(
   }
 
   try {
-    const analysisName = await prisma.analysis.findFirst({
+    const analysis = await prisma.analysis.findFirst({
       where: { id },
+      include: {
+        alternatif: true,
+      },
     });
+
+    if (!analysis) {
+      return NextResponse.json(
+        { error: "Data tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json(
-      { success: true, data: analysisName },
+      { success: true, data: analysis },
       { status: 200 }
     );
   } catch (error) {
+    console.error("Error saat mengambil data analysis:", error);
+
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2025") {
-        return NextResponse.json(
-          { error: "Data tidak ditemukan." },
-          { status: 404 }
-        );
-      }
-    }
+
     return NextResponse.json(
       { message: "Terjadi kesalahan pada server" },
       { status: 500 }

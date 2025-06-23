@@ -11,7 +11,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown, SquarePen } from "lucide-react";
+import { ChevronDown, MapPinned, SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -44,7 +44,6 @@ export default function TableAnalysis() {
     isLoading,
     mutate,
   } = useSWR<Analysis[]>(`/api/analysis`, fetcher);
-
   const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
@@ -124,6 +123,15 @@ export default function TableAnalysis() {
         enableSorting: false,
         cell: ({ row }) => (
           <div className="flex justify-center ">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                router.push(`/dashboard/mapping/${row.original.id}`)
+              }
+            >
+              <MapPinned className="h-7 w-7 text-green-400" />
+            </Button>
             <ModalRangking id={row.original.id} />
             <Button
               variant="ghost"
@@ -132,7 +140,7 @@ export default function TableAnalysis() {
                 router.push(`/dashboard/create/${row.original.id}`)
               }
             >
-              <SquarePen className="h-7 w-7 text-green-400" />
+              <SquarePen className="h-7 w-7 text-yellow-400" />
             </Button>
             <ModalDelete
               id={row.original.id}
@@ -240,10 +248,6 @@ export default function TableAnalysis() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"

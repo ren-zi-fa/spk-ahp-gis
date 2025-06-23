@@ -74,6 +74,6 @@ export type MatrixFormData = {
 export interface HasilPerengkinganData {
   id: string;
   dataRangking: Record<string, number>;
-  createdAt: string;  
+  createdAt: string;
   analysisId: string;
 }

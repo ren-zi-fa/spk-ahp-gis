@@ -36,7 +36,7 @@ export function UserNav() {
   const { data: session, status } = useSession();
 
   if (status === "loading") return <p>Loading...</p>;
-  if (!session) return <p>User belum login</p>;
+  if (!session) return <p>User offline</p>;
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>

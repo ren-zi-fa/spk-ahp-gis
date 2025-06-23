@@ -23,13 +23,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { toast } from "sonner";
+
 const AccountSchema = z
   .object({
     username: z.string().min(1, "Username wajib diisi"),
-    password: z.string().min(2, "Password minimal 6 karakter"),
+    password: z.string().min(2, "Password minimal 2 karakter"),
     confirmPassword: z
       .string()
-      .min(2, "Konfirmasi password minimal 6 karakter"),
+      .min(2, "Konfirmasi password minimal 2 karakter"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
@@ -45,8 +57,6 @@ export default function AccountsCard() {
     fetcher
   );
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const form = useForm<FormValues>({
     resolver: zodResolver(AccountSchema),
     defaultValues: {
@@ -55,7 +65,11 @@ export default function AccountsCard() {
       confirmPassword: "",
     },
   });
+
+  const [isLoading, setIsLoading] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmName, setConfirmName] = useState(""); // NEW
 
   useEffect(() => {
     if (user) {
@@ -67,14 +81,18 @@ export default function AccountsCard() {
     }
   }, [user, form]);
 
-  const onSubmit = async (data: FormValues) => {
+  const handleConfirmSubmit = form.handleSubmit(async (data) => {
+    if (confirmName.trim().toLowerCase() !== "skirk") {
+      toast.error("Salah bukan itu namanya");
+      return;
+    }
+
     if (!session?.user.id) {
-      console.error("ID pengguna tidak tersedia di session.");
+      toast.error("Session tidak ditemukan.");
       return;
     }
 
     setIsLoading(true);
-
     try {
       const res = await fetch(`/api/user/${session.user.id}`, {
         method: "PUT",
@@ -89,18 +107,26 @@ export default function AccountsCard() {
 
       if (!res.ok) {
         const error = await res.json();
-        console.error("Gagal memperbarui akun:", error.error);
+        toast.error(`Gagal update: ${error.error}`);
       } else {
         await res.json();
         setUpdateSuccess(true);
-        form.reset();
+        toast.success("Akun berhasil diperbarui!");
+        form.reset({
+          username: data.username,
+          password: "",
+          confirmPassword: "",
+        });
       }
     } catch (err) {
-      console.error("Terjadi kesalahan saat mengirim permintaan:", err);
+      console.log(err);
+      toast.error("Terjadi kesalahan saat update.");
     } finally {
       setIsLoading(false);
+      setConfirmOpen(false);
+      setConfirmName("");
     }
-  };
+  });
 
   if (!user) {
     return (
@@ -113,22 +139,19 @@ export default function AccountsCard() {
   return (
     <>
       {updateSuccess && (
-        <Alert className="bg-green-500  w-sm mx-auto">
+        <Alert className="bg-green-500 w-sm mx-auto">
           <CheckCircle2Icon />
-          <AlertTitle>
-            Success! Account anda Telah berhasil di update
-          </AlertTitle>
+          <AlertTitle>Sukses! Akun berhasil diupdate</AlertTitle>
           <AlertDescription className="text-white">
-            Perubahan akan dilakukan saat anda Logout
+            Perubahan akan diterapkan saat Anda logout
           </AlertDescription>
         </Alert>
       )}
 
       <Card className="max-w-md mx-auto mt-8">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={(e) => e.preventDefault()}>
             <CardContent className="space-y-4 py-6">
-              {/* Username */}
               <FormField
                 control={form.control}
                 name="username"
@@ -143,7 +166,6 @@ export default function AccountsCard() {
                 )}
               />
 
-              {/* Password */}
               <FormField
                 control={form.control}
                 name="password"
@@ -162,7 +184,6 @@ export default function AccountsCard() {
                 )}
               />
 
-              {/* Konfirmasi Password */}
               <FormField
                 control={form.control}
                 name="confirmPassword"
@@ -183,13 +204,48 @@ export default function AccountsCard() {
             </CardContent>
 
             <CardFooter>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  "Update Akun"
-                )}
-              </Button>
+              <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <DialogTrigger asChild>
+                  <Button type="button">Update Account</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Konfirmasi Update</DialogTitle>
+                    <DialogDescription>
+                      Siapa Nama Guru{" "}
+                      <span className="font-bold text-black">Tartaglia</span>
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="grid gap-4 pt-2">
+                    <Input
+                      placeholder="Name"
+                      value={confirmName}
+                      onChange={(e) => setConfirmName(e.target.value)}
+                    />
+                  </div>
+
+                  <DialogFooter className="pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setConfirmOpen(false)}
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleConfirmSubmit}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        "Ya, Update"
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardFooter>
           </form>
         </Form>

@@ -16,7 +16,7 @@ export function ModalRangking({ id }: { id: string }) {
           <Eye className="h-7 w-7 text-blue-400" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-[90vh] overflow-y-auto">
+      <DialogContent className="md:h-[90vh] h-[80vh] w-[340px] md:w-fit overflow-y-auto">
         <DialogTitle>Hasil Perengkingan</DialogTitle>
         <ResultCalculation analysisId={id} />
       </DialogContent>

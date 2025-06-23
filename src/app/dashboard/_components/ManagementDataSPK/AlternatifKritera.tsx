@@ -91,7 +91,7 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
   return (
     <>
       <div className="">
-        <div className="flex gap-2 mt-4 ">
+        <div className="flex gap-2 mt-4 lg:text-sm text-xs items-center">
           <div className="">See current</div>
           <ModalAlternatif analysisId={id} />
           <ModalKriteria analysisId={id} />
@@ -104,9 +104,9 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
           </button>
         </div>
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-9">
+          <div className="col-span-12 md:col-span-9">
             <div className="flex items-center justify-center gap-2">
-              <h1 className="text-center text-3xl mb-2">Alternatif</h1>
+              <h1 className="text-center text-sm md:text-3xl mb-2">Alternatif</h1>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -131,8 +131,8 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
             </div>
             <Map coordinates={coordinatesAlternatif} analysisId={id} />
           </div>
-          <div className="col-span-3">
-            <h1 className="text-center text-3xl mb-2">Kriteria</h1>
+          <div className="col-span-12 md:col-span-3">
+            <h1 className="text-center  text-sm md:text-3xl  mb-2">Kriteria</h1>
             <FormProvider {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}

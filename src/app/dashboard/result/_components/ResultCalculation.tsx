@@ -180,7 +180,7 @@ export default function ResultCalculation({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-[300px] md:w-full ">
       <div className="flex items-center gap-2 justify-between">
         <button
           onClick={saveResult}
@@ -190,9 +190,9 @@ export default function ResultCalculation({
         </button>
         <button
           onClick={exportToPDF}
-          className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-2 py-1 mt-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
-          Export perengkingan ke PDF
+          Export to PDF
         </button>
       </div>
 
@@ -221,25 +221,28 @@ export default function ResultCalculation({
           RI={RICrit}
           konsistensi={konsistensiCrit}
         />
-
         {altOriginalMatrix.map((matrix: any, idx: any) => (
-          <div key={idx} className="space-y-4">
-            <MatrixTable
-              title={`Matriks Perbandingan Alternatif untuk Kriteria ${
-                data.kriteria[idx]?.name ?? `K${idx + 1}`
-              }`}
-              headers={data.alternatif.map((a) => a.name)}
-              data={matrix}
-              rowLabels={data.alternatif.map((a) => a.name)}
-            />
-            <MatrixTable
-              title={`Normalisasi Alternatif untuk Kriteria ${
-                data.kriteria[idx]?.name ?? `K${idx + 1}`
-              }`}
-              headers={data.alternatif.map((a) => a.name)}
-              data={altNormalize[idx]}
-              rowLabels={data.alternatif.map((a) => a.name)}
-            />
+          <div key={idx}>
+            <div className="space-y-5 gap-2 h-fit">
+              <MatrixTable
+                className="h-1/2"
+                title={`Matriks Perbandingan Alternatif untuk Kriteria ${
+                  data.kriteria[idx]?.name ?? `K${idx + 1}`
+                }`}
+                headers={data.alternatif.map((a) => a.name)}
+                data={matrix}
+                rowLabels={data.alternatif.map((a) => a.name)}
+              />
+              <MatrixTable
+                className="h-1/2"
+                title={`Normalisasi Alternatif untuk Kriteria ${
+                  data.kriteria[idx]?.name ?? `K${idx + 1}`
+                }`}
+                headers={data.alternatif.map((a) => a.name)}
+                data={altNormalize[idx]}
+                rowLabels={data.alternatif.map((a) => a.name)}
+              />
+            </div>
             <CalculationInfo
               lamdaMax={altLamdaMax[idx]}
               CI={altCi[idx]}

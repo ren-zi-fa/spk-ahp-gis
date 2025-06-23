@@ -55,7 +55,7 @@ export default function ResultCalculation({
   analysisId,
 }: ResultCalculationProps) {
   const { data: analysisName } = useSWR<Analysis>(
-    `/api/analysis/${analysisId}`,
+    analysisId === "0" ? null : `/api/analysis/${analysisId}`,
     fetcher
   );
 
@@ -96,12 +96,14 @@ export default function ResultCalculation({
     error,
     isLoading,
   } = useSWR<GetMatricesResponse>(
-    `/api/matrix?analysisId=${analysisId}`,
+    analysisId === "0" ? null : `/api/matrix?analysisId=${analysisId}`,
     fetcher
   );
 
   const { data } = useSWR<KriteriaAlternatifResponse>(
-    `/api/kriteria-alternatif?analysisId=${analysisId}`,
+    analysisId === "0"
+      ? null
+      : `/api/kriteria-alternatif?analysisId=${analysisId}`,
     fetcher
   );
 
@@ -112,10 +114,9 @@ export default function ResultCalculation({
     );
   if (!matrixData) return null;
 
-  // CEK jika data kriteria atau alternatif kosong
   if (!data?.kriteria?.length || !data?.alternatif?.length) {
     return (
-      <div className="flex flex-col justify-center items-center  gap-4 text-red-600 text-lg text-center">
+      <div className="flex flex-col justify-center items-center gap-4 text-red-600 text-lg text-center">
         <CircleAlert className="w-12 h-12" />
         <p>
           Upss!!! Anda belum melakukan proses <br /> perhitungan data pada
@@ -128,6 +129,20 @@ export default function ResultCalculation({
   const critMatrix = matrixData.criteriaMatrix?.data ?? [];
   const altMatrix = matrixData.alternativeMatrix?.[0]?.data ?? [];
 
+  // Cek apakah matriks valid sebelum menjalankan kalkulasi
+  const isCritMatrixValid = critMatrix.length > 0;
+  const isAltMatrixValid =
+    altMatrix.length > 0 && altMatrix.every((m) => m.length > 0);
+
+  if (!isCritMatrixValid || !isAltMatrixValid) {
+    return (
+      <div className="text-red-500 flex justify-center items-center h-10">
+        Data matriks belum lengkap <br /> untuk dilakukan perhitungan.
+      </div>
+    );
+  }
+
+  // Jalankan kalkulasi
   const critResult = calculcateCritMatrix(critMatrix);
   const altResult = calculateAltMatrix(altMatrix);
   const finalCompositeWeights = calculateCompositeWeights(
@@ -180,7 +195,7 @@ export default function ResultCalculation({
   };
 
   return (
-    <div className="space-y-6 w-[300px] md:w-full ">
+    <div className="space-y-6 w-[300px] md:w-full">
       <div className="flex items-center gap-2 justify-between">
         <button
           onClick={saveResult}
@@ -208,12 +223,14 @@ export default function ResultCalculation({
           data={originalMatrixCrit}
           rowLabels={data.kriteria.map((k) => k.name)}
         />
+
         <MatrixTable
           title="Normalisasi Matriks Kriteria"
           headers={data.kriteria.map((k) => k.name)}
           data={normalizedMatrixCrit}
           rowLabels={data.kriteria.map((k) => k.name)}
         />
+
         <CalculationInfo
           lamdaMax={lamdaMaxCrit}
           CI={CICTrit}
@@ -221,7 +238,8 @@ export default function ResultCalculation({
           RI={RICrit}
           konsistensi={konsistensiCrit}
         />
-        {altOriginalMatrix.map((matrix: any, idx: any) => (
+
+        {altOriginalMatrix.map((matrix: any, idx: number) => (
           <div key={idx}>
             <div className="space-y-5 gap-2 h-fit">
               <MatrixTable
@@ -233,6 +251,7 @@ export default function ResultCalculation({
                 data={matrix}
                 rowLabels={data.alternatif.map((a) => a.name)}
               />
+
               <MatrixTable
                 className="h-1/2"
                 title={`Normalisasi Alternatif untuk Kriteria ${
@@ -243,6 +262,7 @@ export default function ResultCalculation({
                 rowLabels={data.alternatif.map((a) => a.name)}
               />
             </div>
+
             <CalculationInfo
               lamdaMax={altLamdaMax[idx]}
               CI={altCi[idx]}

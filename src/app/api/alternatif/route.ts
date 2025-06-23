@@ -9,27 +9,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parsed = AlternatifSchema.parse(body);
 
-    const names = parsed.alternatif.map((item) => item.name);
-
-    // Cari jika ada nama yang sudah ada
-    const existing = await prisma.alternatif.findMany({
-      where: {
-        name: { in: names },
-      },
-      select: { name: true },
-    });
-
-    if (existing.length > 0) {
-      return NextResponse.json(
-        {
-          error: "Data sudah ditambahkan",
-          existing: existing.map((e) => e.name),
-        },
-        { status: 409 }
-      );
-    }
-
-    // Jika tidak ada duplikat, insert
+    
     const created = await prisma.alternatif.createMany({
       data: parsed.alternatif.map((item) => ({
         name: item.name,
@@ -81,4 +61,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-

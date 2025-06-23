@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  
 }
 
 model User {
@@ -41,7 +42,7 @@ model Kriteria {
 
 model Alternatif {
   id          String   @id @default(uuid())
-  name        String   @unique
+  name        String 
   lat         Float
   lang        Float
   createdAt   DateTime @default(now())

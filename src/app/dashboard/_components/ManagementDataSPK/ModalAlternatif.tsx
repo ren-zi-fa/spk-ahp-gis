@@ -21,7 +21,10 @@ export default function ModalAlternatif({
       <DialogTrigger className="underline hover:text-red-700">
         Alternatif
       </DialogTrigger>
-      <DialogContent onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        onInteractOutside={(e) => e.preventDefault()}
+        className="w-[350px] md:w-3xl "
+      >
         <DialogHeader>
           <DialogTitle>Alternatif</DialogTitle>
           <DialogDescription>

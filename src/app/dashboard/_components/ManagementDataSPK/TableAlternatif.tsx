@@ -138,7 +138,7 @@ export default function TableAlternatif({
   if (isLoading) return <MyLoading />;
 
   return (
-    <div className="w-full">
+    <>
       <div className="flex items-center py-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -163,8 +163,8 @@ export default function TableAlternatif({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
-        <Table>
+      <div className="w-full overflow-x-auto rounded-md border">
+        <Table className="w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -235,6 +235,6 @@ export default function TableAlternatif({
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }

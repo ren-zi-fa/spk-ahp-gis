@@ -24,14 +24,15 @@ export default function ListAnalysis() {
   return (
     <div className=" space-x-4 mt-5">
       <div
-        className="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800"
+        className="flex flex-col md:flex-row items-center text-center space-x-2 p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800"
         role="alert"
       >
         <CircleAlertIcon />
         <span className="sr-only">Info</span>
         <div>
-          <span className="font-medium ms-2">Click Nama Anlysis di bawah </span>
-          untuk melakukan process AHP
+          <span className="font-medium ">
+            Click Nama Analysis di bawah untuk melakukan process AHP
+          </span>
         </div>
       </div>
       {data && data.length > 0 ? (

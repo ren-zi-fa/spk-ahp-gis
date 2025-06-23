@@ -13,7 +13,10 @@ export default function ModalKriteria({ analysisId }: { analysisId: string }) {
       <DialogTrigger className="underline hover:text-red-700">
         Kriteria
       </DialogTrigger>
-      <DialogContent onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        onInteractOutside={(e) => e.preventDefault()}
+        className="w-[350px] md:w-3xl "
+      >
         <DialogHeader>
           <DialogTitle>Kriteria</DialogTitle>
           <DialogDescription>

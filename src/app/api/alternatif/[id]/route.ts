@@ -6,17 +6,16 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  await requireAuth();
-  const { id } = await params;
-
-  if (!id) {
-    return NextResponse.json(
-      { error: "Parameter id diperlukan." },
-      { status: 400 }
-    );
-  }
-
   try {
+    await requireAuth();
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Parameter id diperlukan." },
+        { status: 400 }
+      );
+    }
     const deleted = await prisma.alternatif.delete({
       where: { id },
     });

@@ -6,6 +6,7 @@ export const AnalysisSchema = z.object({
     .refine((val) => val.trim().split(/\s+/).length <= 3, {
       message: "maximal 3 kata",
     }),
+  id: z.string().optional(),
 });
 export const KriteriaSchema = z.object({
   analysisId: z.string().uuid(),
@@ -45,4 +46,9 @@ export type MatrixRequestBody = {
 export const LoginSchema = z.object({
   username: z.string().min(1, "Username wajib diisi"),
   password: z.string().min(1, "Password wajib diisi"),
+});
+
+export const updateAnalysisSchema = z.object({
+  name: z.string(),
+  createdAt: z.string().optional(),
 });

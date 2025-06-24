@@ -1,7 +1,11 @@
 import { z } from "zod";
 export const AnalysisSchema = z.object({
-  analysisName: z.string().min(3),
-  id: z.string(),
+  analysisName: z
+    .string()
+    .min(3, { message: "minimal 3 karakter" })
+    .refine((val) => val.trim().split(/\s+/).length <= 3, {
+      message: "maximal 3 kata",
+    }),
 });
 export const KriteriaSchema = z.object({
   analysisId: z.string().uuid(),

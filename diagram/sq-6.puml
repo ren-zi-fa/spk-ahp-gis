@@ -1,0 +1,15 @@
+@startuml
+actor User
+
+boundary "Result Page" as ResultPage
+boundary "Mapping Page" as MappingPage
+boundary "Manage Account Page" as AccountPage
+database Database as Database
+
+== Mapping Workflow ==
+User -> MappingPage : Open Mapping
+MappingPage -> Database : Fetch Geo Data (if any)
+User -> MappingPage : Edit Map Area (GeoMan)
+User -> MappingPage : Click "Take Area"
+MappingPage -> MappingPage : Screenshot Map
+MappingPage -> User : Download

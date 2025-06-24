@@ -1,0 +1,12 @@
+@startuml
+actor User
+database Database
+boundary "Login Page" as LoginPage
+boundary "Dashboard" as Dashboard
+
+User -> LoginPage : Open Login Page
+User -> LoginPage : Input Username & Password
+LoginPage -> Database : Validate Credentials
+Database --> LoginPage : Valid / Invalid
+LoginPage -> Dashboard : Redirect if Valid
+@enduml

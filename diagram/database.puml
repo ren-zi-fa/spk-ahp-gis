@@ -1,51 +1,63 @@
-@startuml spk-ahp
-title  Class Diagram
+  @startuml
+  ' Class Diagram My-SPK
+  top to bottom direction
+  skinparam linetype ortho
 
-entity Analysis {
-  *id : String [PK]
-  --
-  name : String
-  createdAt : DateTime
-}
+  class Analysis {
+    +String id
+    +String name
+    +DateTime createdAt
+  }
 
-entity Kriteria {
-  *id : String [PK]
-  --
-  name : String
-  createdAt : DateTime
-  analysisId : String [FK]
-}
+  class Kriteria {
+    +String id
+    +String name
+    +DateTime createdAt
+    +String analysisId
+  }
 
-entity Alternatif {
-  *id : String [PK]
-  --
-  name : String [unique]
-  lat : Float
-  lang : Float
-  createdAt : DateTime
-  analysisId : String [FK]
-}
+  class Alternatif {
+    +String id
+    +String name
+    +Float lat
+    +Float lang
+    +DateTime createdAt
+    +String analysisId
+  }
 
-entity CriteriaMatrix {
-  *id : String [PK]
-  --
-  data : Json
-  createdAt : DateTime
-  analysisId : String [FK]
-}
+  class CriteriaMatrix {
+    +String id
+    +Json data
+    +DateTime createdAt
+    +String analysisId
+  }
 
-entity AlternativeMatrix {
-  *id : String [PK]
-  --
-  data : Json
-  createdAt : DateTime
-  analysisId : String [FK]
-}
+  class AlternativeMatrix {
+    +String id
+    +Json data
+    +DateTime createdAt
+    +String analysisId
+  }
 
-' Relations
-Analysis ||--o{ Kriteria : has
-Analysis ||--o{ Alternatif : has
-Analysis ||--o{ CriteriaMatrix : has
-Analysis ||--o{ AlternativeMatrix : has
+  class HasilPerengkingan {
+    +String id
+    +Json dataRangking
+    +DateTime createdAt
+    +String analysisId
+  }
+  class User {
+    +String id
+    +String username
+    +String password
+  }
 
-@enduml
+  ' Relationships
+
+    User ..> Analysis
+  Analysis "1" -- "*" Kriteria 
+  Analysis "1" -- "*" Alternatif 
+  Analysis "1" -- "*" CriteriaMatrix 
+  Analysis "1" -- "*" AlternativeMatrix 
+  Analysis "1" -- "*" HasilPerengkingan 
+
+  @enduml

@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor "User" as SPK
+
+rectangle "Mapping Workflow" {
+  usecase "Lihat Peta \n Alternatif" as MAP1
+  usecase "Edit\n  area prefence \n of user" as MAP2
+  usecase "Take Area \n Screenshot" as MAP3
+  usecase "Download \n Gambar Area" as MAP4
+}
+
+SPK --> MAP1
+MAP1 --> MAP2 : <<include>>
+MAP2 --> MAP3 : <<extend>>
+MAP3 --> MAP4 : <<extend>>
+@enduml

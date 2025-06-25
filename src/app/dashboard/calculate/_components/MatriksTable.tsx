@@ -101,7 +101,7 @@ export const MatrixTable: React.FC<IMatrixTable> = ({ title, name, cells }) => {
                               .querySelector(`[name="${reciprocalField}"]`)
                               ?.setAttribute("value", reciprocalValue);
                           }}
-                          className="w-full text-center border rounded px-2 py-1"
+                          className="w-auto text-center border rounded px-2 py-1"
                         >
                           {options.map((opt) => (
                             <option key={opt} value={opt}>

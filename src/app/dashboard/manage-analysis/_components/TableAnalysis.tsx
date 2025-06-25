@@ -376,7 +376,7 @@ export default function TableAnalysis() {
   if (isLoading) return <MyLoading />;
 
   return (
-    <div className="w-sm lg:w-full max-w-3xl mx-auto">
+    <div className="w-auto lg:w-full max-w-3xl mx-auto">
       {/* Save Changes Bar - Responsive & Aligned */}
       {changesCount > 0 && (
         <div className="flex justify-between items-center gap-3 mb-3 bg-white border border-blue-200 shadow-md rounded-lg px-4 py-3  sticky top-2 z-40">
@@ -411,8 +411,8 @@ export default function TableAnalysis() {
         </div>
       )}
 
-      <div className="rounded-md border  lg:w-3xl ">
-        <Table className="max-w-sm lg:max-w-full lg:w-full">
+      <div className="rounded-md border w-auto lg:w-3xl ">
+        <Table className="max-w-sm w-sm lg:max-w-full lg:w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

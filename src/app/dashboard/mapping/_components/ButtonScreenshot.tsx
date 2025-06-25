@@ -52,7 +52,7 @@ export default function ScreenshotButton({
       <Button
         onClick={handleScreenshot}
         variant="outline"
-        className="absolute z-[2100] top-28 right-2"
+        className="absolute z-40 top-28 right-2"
         disabled={isCapturing}
       >
         {isCapturing ? (

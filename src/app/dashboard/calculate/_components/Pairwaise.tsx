@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { ApiResponse, MatrixFormData } from "@/types";
 import MyLoading from "@/components/MyLoading";
+import { Button } from "@/components/ui/button";
 
 export default function Pairwaise({ analysisId }: { analysisId: string }) {
   const router = useRouter();
@@ -68,7 +69,7 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
   };
 
   return (
-    <div className="w-[85%] mx-auto">
+    <div className="w-auto lg:w-[85%] mx-auto">
       <FormProvider {...methods}>
         {isLoading || !kriteriaAlternatif ? (
           <MyLoading />
@@ -90,13 +91,13 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
                 />
               </div>
             ))}
-            <button
+            <Button
               type="submit"
               disabled={isLoadings}
-              className="px-4 py-2 bg-blue-600 text-white rounded w-sm flex justify-center   mx-auto "
+              className="px-4 py-2 bg-blue-600 text-white rounded w-[200px] flex justify-center mx-auto "
             >
               {isLoading ? "Processing..." : "Process"}
-            </button>
+            </Button>
           </form>
         )}
       </FormProvider>

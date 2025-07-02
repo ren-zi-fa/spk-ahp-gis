@@ -1,63 +1,80 @@
-  @startuml
-  ' Class Diagram My-SPK
-  top to bottom direction
-  skinparam linetype ortho
+@startuml
+' Class Diagram My-SPK
+top to bottom direction
+skinparam linetype ortho
 
-  class Analysis {
-    +String id
-    +String name
-    +DateTime createdAt
-  }
+class User {
+  +String id
+  +String username
+  +String password
+  --
+  +login()
+  +logout()
+  +updateProfile()
+}
 
-  class Kriteria {
-    +String id
-    +String name
-    +DateTime createdAt
-    +String analysisId
-  }
+class Analysis {
+  +String id
+  +String name
+  +DateTime createdAt
+  --
+  +createAnalysis()
+  +deleteAnalysis()
+  +calculcateKriteriaMatrix()
+  +calculcateAlternatifMatrix()
+}
 
-  class Alternatif {
-    +String id
-    +String name
-    +Float lat
-    +Float lang
-    +DateTime createdAt
-    +String analysisId
-  }
+class Kriteria {
+  +String id
+  +String name
+  +DateTime createdAt
+  +String analysisId
+  --
+  +addKriteria()
+  +deleteKriteria()
+}
 
-  class CriteriaMatrix {
-    +String id
-    +Json data
-    +DateTime createdAt
-    +String analysisId
-  }
+class Alternatif {
+  +String id
+  +String name
+  +Float lat
+  +Float lang
+  +DateTime createdAt
+  +String analysisId
+  --
+  +addAlternatif()
+  +deleteAlternatif()
+}
 
-  class AlternativeMatrix {
-    +String id
-    +Json data
-    +DateTime createdAt
-    +String analysisId
-  }
+class CriteriaMatrix {
+  +String id
+  +Json data
+  +DateTime createdAt
+  +String analysisId
+}
 
-  class HasilPerengkingan {
-    +String id
-    +Json dataRangking
-    +DateTime createdAt
-    +String analysisId
-  }
-  class User {
-    +String id
-    +String username
-    +String password
-  }
+class AlternativeMatrix {
+  +String id
+  +Json data
+  +DateTime createdAt
+  +String analysisId
+}
 
-  ' Relationships
+class HasilPerengkingan {
+  +String id
+  +Json dataRangking
+  +DateTime createdAt
+  +String analysisId
+}
 
-    User ..> Analysis
-  Analysis "1" -- "*" Kriteria 
-  Analysis "1" -- "*" Alternatif 
-  Analysis "1" -- "*" CriteriaMatrix 
-  Analysis "1" -- "*" AlternativeMatrix 
-  Analysis "1" -- "*" HasilPerengkingan 
 
-  @enduml
+' Relationships
+
+User ..> Analysis
+Analysis "1" -- "*" Kriteria 
+Analysis "1" -- "*" Alternatif 
+Analysis "1" -- "*" CriteriaMatrix 
+Analysis "1" -- "*" AlternativeMatrix 
+Analysis "1" -- "*" HasilPerengkingan 
+
+@enduml

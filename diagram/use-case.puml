@@ -1,0 +1,58 @@
+@startuml
+left to right direction
+skinparam backgroundColor #b3e0ff
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #ffcc66
+  BorderColor black
+}
+
+actor user
+
+rectangle System {
+  usecase "Login" as UC1
+  usecase "Logout" as UC2
+
+  usecase "Analysis" as UC3
+  usecase "view analysis" as UC4
+  usecase "create analysis" as UC5
+
+  usecase "input data" as UC6
+  usecase "add kriteria" as UC7
+  usecase "add alternatif" as UC8
+  usecase "delete kriteria" as UC9
+  usecase "delete alternatif" as UC10
+  usecase "pairwise" as UC11
+  usecase "result" as UC12
+  usecase "manage analysis" as UC13
+  usecase "view result" as UC14
+  usecase "edit kriteria " as UC15
+  usecase "edit alternatif " as UC16
+  usecase "delete analysis  " as UC17
+  usecase "mapping  " as UC18
+
+  user --> UC1
+  UC1 --> UC2 : <<extends>>
+  UC1 --> UC3 : <<extends>>
+
+  UC3 --> UC4 : <<extends>>
+  UC3 --> UC5 : <<extends>>
+  UC3 --> UC6
+
+  UC6 --> UC7 : <<includes>>
+  UC6 --> UC8 : <<includes>>
+  UC6 --> UC9 : <<includes>>
+  UC6 --> UC10 : <<includes>>
+
+  UC6 --> UC11 : <<extends>>
+
+  UC11 --> UC12 : <<extends>>
+  UC1 --> UC13 : <<extends>>
+
+  UC13 --> UC14 : <<includes>>
+  UC13 --> UC15 : <<includes>>
+  UC13 --> UC16 :  <<includes>>
+  UC13 --> UC17 :  <<includes>>
+  UC13 --> UC18 :  <<includes>>
+}
+@enduml

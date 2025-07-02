@@ -155,15 +155,12 @@ export default function ResultCalculation({
     CR: altCR,
     lamdaMax: altLamdaMax,
     originalMatrix: altOriginalMatrix,
-    RI: altRI,
     Ci: altCi,
   } = altResult;
 
   const {
     CI: CICTrit,
     CR: CRCrit,
-    RI: RICrit,
-    konsistensi: konsistensiCrit,
     lamdaMax: lamdaMaxCrit,
     normalizedMatrix: normalizedMatrixCrit,
     originalMatrix: originalMatrixCrit,
@@ -193,25 +190,26 @@ export default function ResultCalculation({
       console.error("Gagal menyimpan hasil perengkingan");
     }
   };
-
+  const konsistensiCrit =
+    CRCrit != null && CRCrit < 0.1 ? "Konsisten" : "Tidak Konsisten";
   return (
-    <div className="space-y-6 w-[300px] md:w-full">
+    <div className="space-y-6 w-[275px] md:w-full">
       <div className="flex items-center gap-2 justify-between">
         <button
           onClick={saveResult}
-          className="px-2 py-1 mt-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-2 py-1 mt-2 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Simpan Hasil Perengkingan
         </button>
         <button
           onClick={exportToPDF}
-          className="px-2 py-1 mt-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-2 py-1 mt-2 text-xs bg-green-600 text-white rounded hover:bg-green-700"
         >
           Export to PDF
         </button>
       </div>
 
-      <div className="px-4" ref={pdfRef}>
+      <div className="px-4 space-y-3" ref={pdfRef}>
         <CompositeWeightChart
           weights={finalCompositeWeights}
           alternatifs={data.alternatif}
@@ -235,7 +233,6 @@ export default function ResultCalculation({
           lamdaMax={lamdaMaxCrit}
           CI={CICTrit}
           CR={CRCrit}
-          RI={RICrit}
           konsistensi={konsistensiCrit}
         />
 
@@ -244,7 +241,7 @@ export default function ResultCalculation({
             <div className="space-y-5 gap-2 h-fit">
               <MatrixTable
                 className="h-1/2"
-                title={`Matriks Perbandingan Alternatif untuk Kriteria ${
+                title={`Alternatif untuk Kriteria ${
                   data.kriteria[idx]?.name ?? `K${idx + 1}`
                 }`}
                 headers={data.alternatif.map((a) => a.name)}
@@ -267,9 +264,8 @@ export default function ResultCalculation({
               lamdaMax={altLamdaMax[idx]}
               CI={altCi[idx]}
               CR={altCR[idx]?.CR}
-              RI={altRI}
               konsistensi={
-                altCR[idx]?.isConsistent ? "Konsisten" : "Tidak Konsisten"
+                altCR[idx]?.CR < 0.1 ? "Konsisten" : "Tidak Konsisten"
               }
             />
           </div>

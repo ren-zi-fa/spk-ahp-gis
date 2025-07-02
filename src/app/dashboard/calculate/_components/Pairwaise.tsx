@@ -67,7 +67,9 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
       setIsLoadings(false);
     }
   };
-
+  if (isLoadings) {
+    return <MyLoading />;
+  }
   return (
     <div className="w-auto lg:w-[85%] mx-auto">
       <FormProvider {...methods}>

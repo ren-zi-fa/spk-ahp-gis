@@ -14,10 +14,7 @@ import ModalKriteria from "./ModalKriteria";
 import { FastForward, Info, Loader2 } from "lucide-react";
 import Map from "@/components/Map";
 import { useRouter } from "next/navigation";
-import useSWR from "swr";
-import { IcoordinatesAlternatif, Kriteria } from "@/types";
-import { fetcher } from "@/lib/fetcher";
-import { Alternatif } from "./TableAlternatif";
+import { IcoordinatesAlternatif } from "@/types";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import {
   Popover,
@@ -42,13 +39,7 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
       .finally(() => setLoading(false));
   }, []);
   const [isLoading, setIsLoading] = useState(false);
-  const { data: kriteriaData, isLoading: loadingKriteria } = useSWR<Kriteria[]>(
-    `/api/kriteria?analysisId=${id}`,
-    fetcher
-  );
-  const { data: alternatifData, isLoading: loadingAlternatif } = useSWR<
-    Alternatif[]
-  >(`/api/alternatif?analysisId=${id}`, fetcher);
+
   const onSubmit = async (data: FormData) => {
     try {
       setIsLoading(true);
@@ -74,27 +65,11 @@ export default function AlternatifKriteriaForm({ id }: { id: string }) {
   };
 
   const nextButton = () => {
-    if (
-      !kriteriaData ||
-      kriteriaData.length === 0 ||
-      !alternatifData ||
-      alternatifData.length === 0
-    ) {
-      toast.error("Data kriteria dan alternatif belum lengkap");
-      return;
-    }
     router.push(`/dashboard/calculate/${id}`);
   };
 
   const router = useRouter();
-  if (loadingKriteria || loadingAlternatif) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64">
-        <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
-        <p className="mt-4 text-sm text-muted-foreground">Memuat data...</p>
-      </div>
-    );
-  }
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-64">

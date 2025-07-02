@@ -1,51 +1,83 @@
 @startuml
+|User|
 start
 
-:User opens Login Page;
+: Login ;
 :Input username & password;
--> [Valid credentials]
-:Redirect to Dashboard;
 
-:User accesses Manage Analysis;
+|System|
+if (Valid credentials?) then (yes)
+  :Redirect to Dashboard;
+endif
+
+|User|
+: Analysis;
 :View list of Analysis;
+
 if (Create New Analysis?) then (yes)
   :Input Analysis name;
+  
+  |System|
   :Save to database;
 endif
 
+|User|
 :Select an Analysis;
-split
-  :Click "Edit";
-  :Redirect to Input Data Page;
+:Click "Edit";
 
-  :Input Criteria;
-  :Save Criteria to DB;
+|System|
+:Redirect to Input Data ;
 
-  :Input Alternative (via Map);
-  :Save Alternative to DB;
+|User|
+:Input Criteria;
 
-  :Lihat/Hapus data Kriteria/Alternatif;
-  :Fetch/Delete data from DB;
+|System|
+:Save Criteria to DB;
 
-  :Click 'Process This Data';
-  :Redirect to AHP Process Page;
+|User|
+:Input Alternative (via Map);
 
-  :Input Pairwise Kriteria;
-  :Input Pairwise Alternatif;
-  :Click Process;
-  :Calculate and Save Result;
+|System|
+:Save Alternative to DB;
 
-  :Redirect to Result Page;
-  :View Chart (Ranking);
-  :View Calculation History (CI, CR, Lambda, etc);
-  :view Manage Analysis Page;
-endsplit
+|User|
+:Lihat/Hapus data Kriteria/Alternatif;
 
-  :Click "Mapping";
-  :Open Mapping Page;
-  :Edit Area in MAP;
-  :Click "Take Area";
-  : Save Image;
+|System|
+:Fetch/Delete data from DB;
+
+|User|
+:Click 'Process This Data';
+
+|System|
+:Redirect to AHP Process ;
+
+|User|
+:Input Pairwise Kriteria;
+:Input Pairwise Alternatif;
+:Click Process;
+
+|System|
+:Calculate and Save Result;
+
+:Redirect to Result ;
+
+|User|
+:View Chart (Ranking);
+:View Calculation History (CI, CR, Lambda);
+:Return to Manage Analysis ;
+
+:Click "Mapping";
+
+|System|
+: Mapping ;
+
+|User|
+:Edit Area in MAP;
+:Click "Take Area";
+
+|System|
+:Save Image;
 
 stop
 @enduml

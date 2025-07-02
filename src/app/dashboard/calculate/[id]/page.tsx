@@ -16,6 +16,7 @@ import Pairwaise from "../_components/Pairwaise";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Analysis } from "@/types";
+import SkalaSaaty from "@/components/SkalaSaaty";
 
 export type HasilPerengkinganResponse = {
   id: string;
@@ -82,6 +83,9 @@ export default function CalculatePage() {
                   </button>
                 </BreadcrumbPage>
               </BreadcrumbItem>
+              <div className="ms-20">
+                <SkalaSaaty />
+              </div>
             </>
           )}
         </BreadcrumbList>

@@ -1,5 +1,5 @@
 @startuml
-actor User
+actor Admin
 
 boundary "Result Page" as ResultPage
 boundary "Mapping Page" as MappingPage
@@ -7,9 +7,9 @@ boundary "Manage Account Page" as AccountPage
 database Database as Database
 
 == Mapping Workflow ==
-User -> MappingPage : Open Mapping
+Admin -> MappingPage : Open Mapping
 MappingPage -> Database : Fetch Geo Data (if any)
-User -> MappingPage : Edit Map Area (GeoMan)
-User -> MappingPage : Click "Take Area"
+Admin -> MappingPage : Edit Map Area (GeoMan)
+Admin -> MappingPage : Click "Take Area"
 MappingPage -> MappingPage : Screenshot Map
-MappingPage -> User : Download
+MappingPage -> Admin : Download

@@ -1,5 +1,5 @@
 @startuml
-actor User
+actor Admin
 database Database
 
 boundary "Dashboard" as Dashboard
@@ -7,9 +7,9 @@ boundary "Manage Analysis Page" as AnalysisPage
 boundary "Input Data Page" as InputPage
 
 == Analysis Workflow ==
-User -> AnalysisPage : Open Manage Analysis Page
+Admin -> AnalysisPage : Open Manage Analysis Page
 AnalysisPage -> Database : Fetch List of Analysis
 Database --> AnalysisPage : Return Analysis List
-User -> AnalysisPage : Click "Create Analysis"
+Admin -> AnalysisPage : Click "Create Analysis"
 AnalysisPage -> InputPage : Redirect
 @enduml

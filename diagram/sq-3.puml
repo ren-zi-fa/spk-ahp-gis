@@ -1,5 +1,5 @@
 @startuml
-actor User
+actor Admin
 
 boundary "Analysis Page" as AnalysisPage
 boundary "Input Data Page" as InputPage
@@ -7,12 +7,12 @@ boundary "AHP Page" as AHPPage
 database Database as Database
 
 == Input Kriteria/Alternatif ==
-User -> InputPage : Input Kriteria
+Admin -> InputPage : Input Kriteria
 InputPage -> Database : Save Kriteria
-User -> InputPage : Input Alternatif via Map
+Admin -> InputPage : Input Alternatif via Map
 InputPage -> Database : Save Alternatif
-User -> InputPage : Lihat/Hapus Kriteria/Alternatif
+Admin -> InputPage : Lihat/Hapus Kriteria/Alternatif
 InputPage -> Database : Fetch/Delete Data
-User -> InputPage : Click \"Process This Data\"
+Admin -> InputPage : Click \"Process This Data\"
 InputPage -> AHPPage : Redirect to Pairwise
 @enduml

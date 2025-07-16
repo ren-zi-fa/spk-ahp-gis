@@ -1,5 +1,5 @@
 @startuml
-actor User
+actor Admin
 
 
 boundary "Input Data Page" as InputPage
@@ -8,11 +8,11 @@ boundary "Result Page" as ResultPage
 database Database as Database
 
 == Proses AHP ==
-User -> InputPage : Click "Process This Data"
+Admin -> InputPage : Click "Process This Data"
 InputPage -> AHPPage : Redirect
-User -> AHPPage : Input Pairwise Kriteria
-User -> AHPPage : Input Pairwise Alternatif
-User -> AHPPage : Click Process
+Admin -> AHPPage : Input Pairwise Kriteria
+Admin -> AHPPage : Input Pairwise Alternatif
+Admin -> AHPPage : Click Process
 AHPPage -> Database : Simpan Hasil Perhitungan
 AHPPage -> ResultPage : Redirect
 @enduml

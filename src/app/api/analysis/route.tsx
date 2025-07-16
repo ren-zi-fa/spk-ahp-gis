@@ -51,7 +51,11 @@ export async function GET() {
   try {
     await requireAuth();
 
-    const data = await prisma.analysis.findMany();
+  const data = await prisma.analysis.findMany({
+      orderBy: {
+        createdAt: 'asc', 
+      },
+    });
 
     return NextResponse.json({
       success: true,

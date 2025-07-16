@@ -3,7 +3,7 @@
 top to bottom direction
 skinparam linetype ortho
 
-class User {
+class Admin {
   +String id
   +String username
   +String password
@@ -70,7 +70,7 @@ class HasilPerengkingan {
 
 ' Relationships
 
-User ..> Analysis
+Admin ..> Analysis
 Analysis "1" -- "*" Kriteria 
 Analysis "1" -- "*" Alternatif 
 Analysis "1" -- "*" CriteriaMatrix 

@@ -49,6 +49,15 @@ export const LoginSchema = z.object({
 });
 
 export const updateAnalysisSchema = z.object({
-  name: z.string(),
-  createdAt: z.string().optional(),
+  name: z.string().optional(),
+  createdAt: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        return !isNaN(new Date(val).getTime());
+      },
+      { message: "createdAt must be a valid date string" }
+    ),
 });

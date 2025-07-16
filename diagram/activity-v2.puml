@@ -1,0 +1,40 @@
+@startuml
+
+
+|Admin|
+start
+:Login;
+
+|System|
+:Validate Admin;
+if (Valid?) then (yes)
+else (no)
+  stop
+endif
+
+|Admin|
+:Create New Analysis;
+:Input Criteria;
+:Input Alternatives;
+:Perform Pairwise Comparison;
+
+|System|
+:Calculate AHP Weights;
+:Generate Results;
+
+if (Consistent?) then (no)
+  |Admin|
+  :Revisi Comparison;
+else (yes)
+  |Admin|
+  :View Results;
+  :Print/Export Results;
+
+  |System|
+  :Generate Report;
+
+endif
+
+stop
+
+@enduml

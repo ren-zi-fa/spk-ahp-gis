@@ -83,11 +83,11 @@ export default function CalculatePage() {
                   </button>
                 </BreadcrumbPage>
               </BreadcrumbItem>
-              <div className="ms-20">
-                <SkalaSaaty />
-              </div>
             </>
           )}
+          <div className="ms-20">
+            <SkalaSaaty />
+          </div>
         </BreadcrumbList>
       </Breadcrumb>
       <Pairwaise analysisId={params.id} />

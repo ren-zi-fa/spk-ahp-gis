@@ -1,58 +1,72 @@
 @startuml
+!theme plain
+
+' Menggunakan skinparam untuk membuat garis lurus
+skinparam linetype polyline
+
 left to right direction
-skinparam backgroundColor #b3e0ff
-skinparam packageStyle rectangle
-skinparam usecase {
-  BackgroundColor #ffcc66
-  BorderColor black
+
+actor Admin
+
+rectangle  {
+  usecase "Login" as UC2
+  
+  usecase "View Dashboard" as UC1
+  usecase "Manage Analysis" as UC4
+  usecase "Create Analysis" as UC5
+  usecase "View Result Calculation" as UC6
+
+  usecase "edit" as UC4b
+  usecase "delete" as UC4c
+
+  usecase "Manage Kriteria" as UC5a
+  
+  usecase "add" as UC5a1
+  usecase "edit" as UC5a2
+  usecase "delete" as UC5a3
+
+  usecase "Export PDF" as UC6b
+  
+  ' Posisikan Manage Alternatif lebih ke bawah
+  usecase "Manage Alternatif" as UC5b
+  
+  usecase "add" as UC5b1
+  usecase "edit" as UC5b2
+  usecase "delete" as UC5b3
 }
 
-actor user
+' Koneksi Admin ke use case utama
+Admin --> UC2
+Admin --> UC1
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
 
-rectangle System {
-  usecase "Login" as UC1
-  usecase "Logout" as UC2
+' Include relationships - Login diperlukan untuk semua fungsi utama
+UC1 ..> UC2 : <<include>>
+UC4 ..> UC2 : <<include>>
+UC5 ..> UC2 : <<include>>
+UC6 ..> UC2 : <<include>>
 
-  usecase "Analysis" as UC3
-  usecase "view analysis" as UC4
-  usecase "create analysis" as UC5
+' Extend relationships untuk Manage Analysis
+UC4 ..> UC4b : <<extend>>
+UC4 ..> UC4c : <<extend>>
 
-  usecase "input data" as UC6
-  usecase "add kriteria" as UC7
-  usecase "add alternatif" as UC8
-  usecase "delete kriteria" as UC9
-  usecase "delete alternatif" as UC10
-  usecase "pairwise" as UC11
-  usecase "result" as UC12
-  usecase "manage analysis" as UC13
-  usecase "view result" as UC14
-  usecase "edit kriteria " as UC15
-  usecase "edit alternatif " as UC16
-  usecase "delete analysis  " as UC17
-  usecase "mapping  " as UC18
+' Extend relationships untuk Create Analysis
+UC5 ..> UC5a : <<extend>>
+UC5 ..> UC5b : <<extend>>
 
-  user --> UC1
-  UC1 --> UC2 : <<extends>>
-  UC1 --> UC3 : <<extends>>
+' Extend relationships untuk Manage Kriteria
+UC5a ..> UC5a1 : <<extend>>
+UC5a ..> UC5a2 : <<extend>>
+UC5a ..> UC5a3 : <<extend>>
 
-  UC3 --> UC4 : <<extends>>
-  UC3 --> UC5 : <<extends>>
-  UC3 --> UC6
+' Extend relationships untuk Manage Alternatif
+UC5b ..> UC5b1 : <<extend>>
+UC5b ..> UC5b2 : <<extend>>
+UC5b ..> UC5b3 : <<extend>>
 
-  UC6 --> UC7 : <<includes>>
-  UC6 --> UC8 : <<includes>>
-  UC6 --> UC9 : <<includes>>
-  UC6 --> UC10 : <<includes>>
+' Extend relationship untuk Export PDF
+UC6 ..> UC6b : <<extend>>
 
-  UC6 --> UC11 : <<extends>>
-
-  UC11 --> UC12 : <<extends>>
-  UC1 --> UC13 : <<extends>>
-
-  UC13 --> UC14 : <<includes>>
-  UC13 --> UC15 : <<includes>>
-  UC13 --> UC16 :  <<includes>>
-  UC13 --> UC17 :  <<includes>>
-  UC13 --> UC18 :  <<includes>>
-}
 @enduml

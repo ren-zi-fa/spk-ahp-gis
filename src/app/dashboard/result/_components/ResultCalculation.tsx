@@ -13,7 +13,7 @@ import CompositeWeightChart from "./PerengkinganChart";
 import MatrixTable from "./HistoryCalculate";
 import CalculationInfo from "./InfoResult";
 import { toast } from "sonner";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas-pro";
 import { Alternatif, Analysis, Kriteria } from "@/types";
@@ -58,11 +58,15 @@ export default function ResultCalculation({
     analysisId === "0" ? null : `/api/analysis/${analysisId}`,
     fetcher
   );
+  const [exporting, setExporting] = useState(false);
 
   const pdfRef = useRef<HTMLDivElement>(null);
 
   const exportToPDF = async () => {
     if (!pdfRef.current) return;
+
+    setExporting(true); // 🔁 Tampilkan kop
+    await new Promise((resolve) => setTimeout(resolve, 100)); // ⏳ Tunggu render selesai
 
     const element = pdfRef.current;
     const canvas = await html2canvas(element, { scale: 2 });
@@ -89,6 +93,8 @@ export default function ResultCalculation({
     }
 
     pdf.save(`hasil-perengkingan-${analysisName?.name}.pdf`);
+
+    setExporting(false); // ✅ Sembunyikan kop lagi
   };
 
   const {
@@ -209,7 +215,23 @@ export default function ResultCalculation({
         </button>
       </div>
 
-      <div className="px-4 space-y-3" ref={pdfRef}>
+      <div className="px-4 space-y-3 py-2" ref={pdfRef}>
+        {exporting && (
+          <div className="flex items-center gap-4 border-b pb-4 mb-4 mt-4">
+            <img
+              src="/logo-pdf.png"
+              alt="Logo"
+              className="w-16 h-16 object-contain"
+            />
+            <div className="text-center w-full">
+              <h1 className="text-lg font-bold uppercase">
+                Dinas Perkebunan dan Peternakan
+              </h1>
+              <h2 className="text-md uppercase">Kabupaten Pasaman Barat</h2>
+            </div>
+          </div>
+        )}
+
         <CompositeWeightChart
           weights={finalCompositeWeights}
           alternatifs={data.alternatif}

@@ -1,5 +1,5 @@
 @startuml
-actor User
+actor Admin
 
 
 boundary "AHP Page" as AHPPage
@@ -7,11 +7,11 @@ boundary "Result Page" as ResultPage
 database Database as Database
 
 == Result Workflow ==
-User -> ResultPage : View Chart (Ranking)
+Admin -> ResultPage : View Chart (Ranking)
 ResultPage -> Database : Fetch Ranking & CI/CR Details
-User -> ResultPage : Save to DB (if not saved)
+Admin -> ResultPage : Save to DB (if not saved)
 ResultPage -> Database : Store Final Result
-User -> ResultPage : Click Export to PDF
+Admin -> ResultPage : Click Export to PDF
 ResultPage -> ResultPage : Screenshot & Download PDF
 
 @enduml

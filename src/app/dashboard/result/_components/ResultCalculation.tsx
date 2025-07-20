@@ -179,12 +179,11 @@ export default function ResultCalculation({
       acc[alt.name] = finalCompositeWeights[i];
       return acc;
     }, {} as Record<string, number>);
-
     const res = await fetch("/api/hasil-rangking", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        analysisId,
+      analysisId,
         result,
       }),
     });

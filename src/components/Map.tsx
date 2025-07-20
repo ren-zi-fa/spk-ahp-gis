@@ -14,7 +14,6 @@ import React, { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import { pasamanBaratBoundary } from "@/lib/koordinat";
-import Geoman from "./Geoman";
 import { mutate } from "swr";
 import MyLoading from "./MyLoading";
 
@@ -153,7 +152,6 @@ export default function Map({ coordinates, analysisId }: MapProps) {
             </Marker>
           ))}
         </LayersControl>
-        <Geoman />
       </MapContainer>
     </div>
   );

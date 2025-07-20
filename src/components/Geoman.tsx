@@ -23,13 +23,9 @@ const Geoman = () => {
     (leafletContainer as any).on("pm:create", (e: any) => {
       if (e.layer && e.layer.pm) {
         const shape = e;
-        console.log(e);
 
         // enable editing of circle
         shape.layer.pm.enable();
-
-        console.log(`object created: ${shape.layer.pm.getShape()}`);
-        // console.log(leafletContainer.pm.getGeomanLayers(true).toGeoJSON());
         (leafletContainer as any).pm
           .getGeomanLayers(true)
           .bindPopup("i am whole")
@@ -37,7 +33,7 @@ const Geoman = () => {
         (leafletContainer as any).pm
           .getGeomanLayers()
           .map((layer: any, index: any) =>
-            layer.bindPopup(`I am figure N° ${index}`)
+            layer.bindPopup(`koordinat N° ${index}`)
           );
         shape.layer.on("pm:edit", (e: any) => {
           const event = e;

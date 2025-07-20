@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  MapContainer,
-  TileLayer,
-  Polygon,
-  LayersControl,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, LayersControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import React, { useEffect, useMemo, useState } from "react";
@@ -15,10 +10,7 @@ import { pasamanBaratBoundary } from "@/lib/koordinat";
 import MyLoading from "@/components/MyLoading";
 import Geoman from "@/components/Geoman";
 import { fetcher } from "@/lib/fetcher";
-import {
-  HasilPerengkinganData,
-  IcoordinatesAlternatif,
-} from "@/types";
+import { HasilPerengkinganData, IcoordinatesAlternatif } from "@/types";
 import { fetchSingleCoordinate } from "@/lib/alternatifKecamatan";
 import ScreenshotButton from "./ButtonScreenshot";
 
@@ -65,6 +57,7 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
     if (entries.length === 0) return;
 
     const [kecamatanTertinggi] = entries.sort((a, b) => b[1] - a[1])[0];
+    console.log(kecamatanTertinggi);
 
     fetchSingleCoordinate(kecamatanTertinggi).then((data) => {
       if (data) {
@@ -99,6 +92,13 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
 
   return (
     <div className="relative">
+      {(() => {
+        const rangkPertama = Object.entries(rangks.dataRangking).reduce(
+          (acc, [alternatif, nilai]) => (nilai > acc.nilai ? { alternatif, nilai } : acc),
+          { alternatif: "", nilai: -Infinity }
+        );
+        return <p className="text-lg font-semibold text-center">{rangkPertama.alternatif}</p>;
+      })()}
       <ScreenshotButton targetId="map-id" />
       <MapContainer
         id="map-id"

@@ -41,6 +41,7 @@
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dom-to-image-more": "^3.6.0",
     "geist": "^1.4.2",
     "html2canvas-pro": "^1.5.11",
     "immer": "^10.1.1",

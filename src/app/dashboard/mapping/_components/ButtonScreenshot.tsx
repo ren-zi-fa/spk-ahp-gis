@@ -1,72 +1,51 @@
-"use client";
-
-import html2canvas from "html2canvas-pro";
 import { Button } from "@/components/ui/button";
-import { Camera, Loader2 } from "lucide-react";
-import { useState } from "react";
+import domtoimage from "dom-to-image-more";
+import React from "react";
 
-type ScreenshotButtonProps = {
+type Props = {
   targetId: string;
-  filename?: string;
 };
 
-export default function ScreenshotButton({
-  targetId,
-  filename = "your-data.png",
-}: ScreenshotButtonProps) {
-  const [isCapturing, setIsCapturing] = useState(false);
-
+const ScreenshotButton = ({ targetId }: Props) => {
   const handleScreenshot = async () => {
     const mapElement = document.getElementById(targetId);
     if (!mapElement) return;
 
-    setIsCapturing(true);
+    // Sembunyikan titik edit saja
+    const editHandles = mapElement.querySelectorAll(
+      ".leaflet-pm-marker, .marker-icon, [class*='vertex']"
+    );
 
-    try {
-      await new Promise((res) => setTimeout(res, 10000));
+    editHandles.forEach((el) => {
+      (el as HTMLElement).style.display = "none";
+    });
 
-      const canvas = await html2canvas(mapElement, {
-        useCORS: true,
-      });
+    // Ambil gambar sebagai blob
+    const blob = await domtoimage.toBlob(mapElement);
 
-      const dataURL = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = dataURL;
-      link.download = filename;
-      link.click();
-    } catch (err) {
-      console.error("Gagal mengambil screenshot:", err);
-    }
+    // Kembalikan titik edit
+    editHandles.forEach((el) => {
+      (el as HTMLElement).style.display = "";
+    });
 
-    setIsCapturing(false);
+    // Buat link dan download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "map-result.png";
+    link.click();
   };
 
   return (
-    <>
-      {isCapturing && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/50 z-[2000] flex items-center justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-white" />
-        </div>
-      )}
-
+    <div className="text-center my-4">
       <Button
         onClick={handleScreenshot}
-        variant="outline"
         className="absolute z-40 top-28 right-2"
-        disabled={isCapturing}
+        variant="outline"
       >
-        {isCapturing ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            processing...
-          </>
-        ) : (
-          <>
-            <Camera className="mr-2 h-4 w-4" />
-            Take Area
-          </>
-        )}
+        Take area
       </Button>
-    </>
+    </div>
   );
-}
+};
+
+export default ScreenshotButton;

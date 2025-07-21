@@ -37,8 +37,8 @@ export function LoginForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      username: "admin",
-      password: "admin",
+      username: "",
+      password: "",
     },
   });
 
@@ -77,9 +77,9 @@ export function LoginForm({
               className="p-6 md:p-8 space-y-6"
             >
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back Renz</h1>
+                <h1 className="text-2xl font-bold">Welcome Back</h1>
                 <p className="text-balance text-muted-foreground">
-                  Login to your SPK account
+                  Login to your account
                 </p>
               </div>
 
@@ -109,6 +109,7 @@ export function LoginForm({
                           type={showPassword ? "text" : "password"}
                           {...field}
                           className="pr-10"
+                          placeholder="********"
                         />
                         <button
                           type="button"
@@ -145,7 +146,7 @@ export function LoginForm({
 
           <div className="relative hidden bg-muted md:block">
             <Image
-              src="/raiden.png"
+              src="/logo-login.jpg"
               alt="Image"
               fill
               className="object-cover px-2 dark:brightness-[0.2] dark:grayscale"

@@ -213,7 +213,7 @@ export default function AccountsCard() {
                     <DialogTitle>Konfirmasi Update</DialogTitle>
                     <DialogDescription>
                       Siapa Nama Guru{" "}
-                      <span className="font-bold text-black">Tartaglia</span>
+                      <span className="font-bold text-black dark:text-gray-300">Tartaglia</span>
                     </DialogDescription>
                   </DialogHeader>
 

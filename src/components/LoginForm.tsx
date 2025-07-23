@@ -6,8 +6,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,7 +68,7 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
-        <CardContent className="grid p-0 md:grid-cols-2">
+        <CardContent className="grid p-2 md:grid-cols-2">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -145,13 +143,16 @@ export function LoginForm({
           </Form>
 
           <div className="relative hidden bg-muted md:block">
-            <Image
+            <img
               src="/logo-login.jpg"
-              alt="Image"
-              fill
-              className="object-cover px-2 dark:brightness-[0.2] dark:grayscale"
-              priority
+              alt="Logo Dinas"
+              className="object-contain w-full h-64 p-4"
             />
+            <div className="px-4 py-2 text-center font-semibold text-sm leading-tight">
+              DINAS PERKEBUNAN DAN PETERNAKAN
+              <br />
+              KABUPATEN PASAMAN BARAT
+            </div>
           </div>
         </CardContent>
       </Card>

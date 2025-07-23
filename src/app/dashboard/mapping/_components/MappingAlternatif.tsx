@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any  */
 "use client";
 
 import { MapContainer, TileLayer, Polygon, LayersControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import React, { useEffect, useMemo, useState } from "react";
+import L, { LatLngExpression } from "leaflet";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
-import { pasamanBaratBoundary } from "@/lib/koordinat";
 import MyLoading from "@/components/MyLoading";
 import Geoman from "@/components/Geoman";
 import { fetcher } from "@/lib/fetcher";
@@ -17,6 +17,7 @@ import ScreenshotButton from "./ButtonScreenshot";
 const markerIcon = "/marker-icon.png";
 const markerIcon2x = "/marker-icon-2x.png";
 const markerShadow = "/marker-shadow.png";
+
 /* eslint-disable */
 // @ts-expect-error
 delete L.Icon.Default.prototype._getIconUrl;
@@ -25,22 +26,12 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   shadowUrl: markerShadow,
 });
-/* eslint-disable */
-type Coordinates = {
-  lat: number;
-  lng: number;
-  name: string;
-  area: { lat: number; lng: number }[];
-};
 
 type MapProps = {
   analysisId: string;
 };
 
-const pasamanBaratBoundaryReversed: L.LatLngTuple[] = pasamanBaratBoundary.map(
-  ([lng, lat]) => [lat, lng]
-);
-const { BaseLayer, Overlay } = LayersControl;
+const { BaseLayer } = LayersControl;
 
 export default function MappingAlternatif({ analysisId }: MapProps) {
   const { data: rangks, isLoading } = useSWR<HasilPerengkinganData>(
@@ -50,6 +41,8 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
 
   const [coordinates, setCoordinates] = useState<IcoordinatesAlternatif[]>([]);
   const [loadingFile, setLoadingFile] = useState(true);
+  const mapRef = useRef<any>(null);
+
   useEffect(() => {
     if (!rangks) return;
 
@@ -57,7 +50,6 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
     if (entries.length === 0) return;
 
     const [kecamatanTertinggi] = entries.sort((a, b) => b[1] - a[1])[0];
-    console.log(kecamatanTertinggi);
 
     fetchSingleCoordinate(kecamatanTertinggi).then((data) => {
       if (data) {
@@ -72,6 +64,14 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
       coord.area.map((point) => [point.lat, point.lng] as [number, number])
     );
   }, [coordinates]);
+
+  // Zoom otomatis ke polygon
+  useEffect(() => {
+    if (polygonsMemo.length > 0 && mapRef.current) {
+      const bounds = L.latLngBounds(polygonsMemo[0]);
+      mapRef.current.fitBounds(bounds, { padding: [20, 20] });
+    }
+  }, [polygonsMemo]);
 
   if (isLoading || loadingFile) {
     return (
@@ -90,18 +90,35 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
 
   if (!rangks) return <div>Gagal memuat data</div>;
 
+  // Dunia penuh sebagai kotak luar
+  const worldBounds: LatLngExpression[] = [
+    [-90, -180],
+    [-90, 180],
+    [90, 180],
+    [90, -180],
+  ];
+
+  const targetPolygon = polygonsMemo[0];
+
   return (
     <div className="relative">
       {(() => {
         const rangkPertama = Object.entries(rangks.dataRangking).reduce(
-          (acc, [alternatif, nilai]) => (nilai > acc.nilai ? { alternatif, nilai } : acc),
+          (acc, [alternatif, nilai]) =>
+            nilai > acc.nilai ? { alternatif, nilai } : acc,
           { alternatif: "", nilai: -Infinity }
         );
-        return <p className="text-lg font-semibold text-center">{rangkPertama.alternatif}</p>;
+        return (
+          <p className="text-lg font-semibold text-center">
+            {rangkPertama.alternatif}
+          </p>
+        );
       })()}
       <ScreenshotButton targetId="map-id" />
+
       <MapContainer
         id="map-id"
+        ref={mapRef}
         center={[0.336112, 99.906719]}
         zoom={10}
         className="h-[80vh] md:h-[90vh] w-full z-10 relative"
@@ -114,28 +131,37 @@ export default function MappingAlternatif({ analysisId }: MapProps) {
               crossOrigin="anonymous"
             />
           </BaseLayer>
+
           <BaseLayer name="Google Satellite">
             <TileLayer
               url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
               crossOrigin="anonymous"
             />
           </BaseLayer>
-
-          <Overlay checked name="Batas Kabupaten Pasaman Barat">
-            <Polygon
-              positions={pasamanBaratBoundaryReversed}
-              pathOptions={{ color: "blue", weight: 1, fillOpacity: 0 }}
-            />
-          </Overlay>
-
-          {polygonsMemo.map((polygonPositions, index) => (
-            <Polygon
-              key={`polygon-${index}`}
-              positions={polygonPositions}
-              pathOptions={{ color: "red", weight: 1, fillOpacity: 0.4 }}
-            />
-          ))}
         </LayersControl>
+
+        {/* Masking luar polygon */}
+        {targetPolygon && (
+          <Polygon
+            positions={[worldBounds, targetPolygon]}
+            pathOptions={{
+              fillRule: "evenodd",
+              color: "black",
+              fillColor: "black",
+              fillOpacity: 0.7,
+              opacity: 0,
+            }}
+          />
+        )}
+
+        {/* Polygon utama */}
+        {targetPolygon && (
+          <Polygon
+            positions={targetPolygon}
+            pathOptions={{ color: "white", weight: 1, fillOpacity: 0.4 }}
+          />
+        )}
+
         <Geoman />
       </MapContainer>
     </div>

@@ -39,8 +39,8 @@ const ScreenshotButton = ({ targetId }: Props) => {
     <div className="text-center my-4">
       <Button
         onClick={handleScreenshot}
-        className="absolute z-40 top-28 right-2"
-        variant="outline"
+        className="absolute z-40 top-28 right-2 bg-white dark:bg-white text-black hover:bg-gray-200"
+       
       >
         Take area
       </Button>

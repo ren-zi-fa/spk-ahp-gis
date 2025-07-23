@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { FormProvider, useForm, UseFormReturn } from "react-hook-form";
 import { MatrixTable } from "./MatriksTable";
 import useSWR from "swr";
@@ -12,7 +12,9 @@ import { Button } from "@/components/ui/button";
 
 export default function Pairwaise({ analysisId }: { analysisId: string }) {
   const router = useRouter();
-  const [isLoadings, setIsLoadings] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
   const { data: kriteriaAlternatif, isLoading } = useSWR<ApiResponse>(
     `/api/kriteria-alternatif?analysisId=${analysisId}`,
     fetcher
@@ -39,8 +41,10 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
   });
 
   const onSubmit = async (data: MatrixFormData) => {
+    if (isSubmitting) return; // Prevent double submission
+
     try {
-      setIsLoadings(true);
+      setIsSubmitting(true);
 
       const response = await fetch("/api/matrix", {
         method: "POST",
@@ -55,53 +59,56 @@ export default function Pairwaise({ analysisId }: { analysisId: string }) {
       const result = await response.json();
 
       if (response.ok) {
-        router.push(`/dashboard/result/${analysisId}`);
+        // Use startTransition for smoother navigation
+        startTransition(() => {
+          router.push(`/dashboard/result/${analysisId}`);
+        });
       } else {
         alert(`Gagal: ${result.message}`);
-        return;
+        setIsSubmitting(false); // Reset loading only on error
       }
     } catch (error) {
       alert("Terjadi kesalahan saat mengirim data.");
       console.error(error);
-    } finally {
-      setIsLoadings(false);
+      setIsSubmitting(false); // Reset loading only on error
     }
+    // Don't reset setIsSubmitting(false) in finally block for successful submissions
+    // Let the component unmount naturally after successful redirect
   };
-  if (isLoadings) {
+
+  // Show loading during initial data fetch or during submission/redirect
+  if (isLoading || !kriteriaAlternatif || isSubmitting || isPending) {
     return <MyLoading />;
   }
+
   return (
     <div className="w-auto lg:w-[85%] mx-auto">
       <FormProvider {...methods}>
-        {isLoading || !kriteriaAlternatif ? (
-          <MyLoading />
-        ) : (
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <div className="mb-8 mt-10">
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className="mb-8 mt-10">
+            <MatrixTable
+              title="Matrix of pairwise comparisons for criteria"
+              name="critMatrix"
+              cells={kriteriaAlternatif.kriteria}
+            />
+          </div>
+          {kriteriaAlternatif.kriteria.map((criterion, index) => (
+            <div key={index} className="mb-8">
               <MatrixTable
-                title="Matrix of pairwise comparisons for criteria"
-                name="critMatrix"
-                cells={kriteriaAlternatif.kriteria}
+                title={`Matrix of pairwise comparisons for criterion ${criterion.name}`}
+                name={`altMatrixes.${index}`}
+                cells={kriteriaAlternatif.alternatif}
               />
             </div>
-            {kriteriaAlternatif.kriteria.map((criterion, index) => (
-              <div key={index} className="mb-8">
-                <MatrixTable
-                  title={`Matrix of pairwise comparisons for criterion ${criterion.name}`}
-                  name={`altMatrixes.${index}`}
-                  cells={kriteriaAlternatif.alternatif}
-                />
-              </div>
-            ))}
-            <Button
-              type="submit"
-              disabled={isLoadings}
-              className="px-4 py-2 bg-blue-600 text-white rounded w-[200px] flex justify-center mx-auto "
-            >
-              {isLoading ? "Processing..." : "Process"}
-            </Button>
-          </form>
-        )}
+          ))}
+          <Button
+            type="submit"
+            disabled={isSubmitting || isPending}
+            className="px-4 py-2 bg-blue-600 text-white rounded w-[200px] flex justify-center mx-auto disabled:opacity-50"
+          >
+            {isSubmitting || isPending ? "Processing..." : "Process"}
+          </Button>
+        </form>
       </FormProvider>
     </div>
   );

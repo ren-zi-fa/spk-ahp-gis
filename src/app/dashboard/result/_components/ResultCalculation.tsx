@@ -62,40 +62,39 @@ export default function ResultCalculation({
 
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  const exportToPDF = async () => {
-    if (!pdfRef.current) return;
+const exportToPDF = async () => {
+  if (!pdfRef.current) return;
 
-    setExporting(true); // 🔁 Tampilkan kop
-    await new Promise((resolve) => setTimeout(resolve, 100)); // ⏳ Tunggu render selesai
+  setExporting(true);
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const element = pdfRef.current;
-    const canvas = await html2canvas(element, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
+  const element = pdfRef.current;
+  const canvas = await html2canvas(element);
+  const imgData = canvas.toDataURL("image/jpeg", 0.8); 
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  const imgWidth = pageWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let heightLeft = imgHeight;
-    let position = 0;
+  let heightLeft = imgHeight;
+  let position = 0;
 
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
+  }
 
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
-    pdf.save(`hasil-perengkingan-${analysisName?.name}.pdf`);
-
-    setExporting(false); // ✅ Sembunyikan kop lagi
-  };
+  pdf.save(`hasil-perengkingan-${analysisName?.name}.pdf`);
+  setExporting(false);
+};
 
   const {
     data: matrixData,

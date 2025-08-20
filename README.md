@@ -9,12 +9,12 @@
 - username : admin
 - password : admin
 
-* **Screenshot Web:** ![Screenshot Web](https://github.com/ren-zi-fa/spk-ahp/blob/main/image/web.png)
+* **Screenshot Web:** ![Screenshot Web](https://github.com/ren-zi-fa/spk-ahp-gis/blob/main/image/web.png)
 
 ## Petunjuk Instalasi
 
 ```bash
-git clone https://github.com/ren-zi-fa/spk-ahp.git
+git clone https://github.com/ren-zi-fa/spk-ahp-gis.git
 
 cd spk-ahp
 

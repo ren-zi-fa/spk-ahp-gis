@@ -83,7 +83,7 @@ export default function AccountsCard() {
 
   const handleConfirmSubmit = form.handleSubmit(async (data) => {
     if (confirmName.trim().toLowerCase() !== "skirk") {
-      toast.error("Salah bukan itu namanya");
+      toast.error("KATA KUNCI SALAH");
       return;
     }
 
@@ -212,8 +212,8 @@ export default function AccountsCard() {
                   <DialogHeader>
                     <DialogTitle>Konfirmasi Update</DialogTitle>
                     <DialogDescription>
-                      Siapa Nama Guru{" "}
-                      <span className="font-bold text-black dark:text-gray-300">Tartaglia</span>
+                      Masukkan KATA KUNCI
+                      <span className="font-bold text-black dark:text-gray-300">{user.username}</span>
                     </DialogDescription>
                   </DialogHeader>
 
